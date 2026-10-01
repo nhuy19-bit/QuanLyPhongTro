@@ -20,6 +20,7 @@ from django.urls import path
 from quanly.views import (
     home,
     dang_nhap,
+    dang_ky,
     dang_xuat,
     dashboard,
 )
@@ -31,6 +32,8 @@ urlpatterns = [
     path('', home, name='home'),
 
     path('dang-nhap/', dang_nhap, name='login'),
+
+    path('dang-ky/', dang_ky, name='register'),
 
     path('dang-xuat/', dang_xuat, name='logout'),
 

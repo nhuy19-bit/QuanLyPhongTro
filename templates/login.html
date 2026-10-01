@@ -51,6 +51,7 @@
                                 name="username"
                                 class="form-control"
                                 placeholder="Nhập tên đăng nhập"
+                                autocomplete="off"
                                 required
                             >
 
@@ -67,6 +68,7 @@
                                 name="password"
                                 class="form-control"
                                 placeholder="Nhập mật khẩu"
+                                autocomplete="new-password"
                                 required
                             >
 
@@ -83,7 +85,25 @@
 
                     <div class="text-center mt-3">
 
-                        <a href="/">
+                        <span class="text-muted">
+                            Chưa có tài khoản?
+                        </span>
+
+                        <a
+                            href="{% url 'register' %}"
+                            class="text-decoration-none fw-semibold"
+                        >
+                            Đăng ký ngay
+                        </a>
+
+                    </div>
+
+                    <div class="text-center mt-2">
+
+                        <a
+                            href="{% url 'home' %}"
+                            class="text-decoration-none"
+                        >
                             ← Quay về trang chủ
                         </a>
 
