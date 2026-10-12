@@ -1,202 +1,399 @@
+
 <!DOCTYPE html>
 <html lang="vi">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Dashboard người thuê - Quản lý phòng trọ</title>
-
-    <link
-        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-        rel="stylesheet"
-    >
+    <title>Trang chủ người thuê - Quản lý phòng trọ</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
     <style>
+        :root {
+            --primary: #42d5d0;
+            --primary-dark: #159f9b;
+            --background: #f7f8fa;
+            --text: #252b36;
+            --muted: #8a929f;
+            --border: #edf0f3;
+        }
+
+        * { box-sizing: border-box; }
+
         body {
-            background: #f5f7fb;
+            margin: 0;
+            background: var(--background);
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
         }
 
-        .navbar {
-            background: #0d6efd;
+        a { text-decoration: none; }
+
+        .app { min-height: 100vh; }
+
+        .sidebar {
+            width: 235px;
+            background: #fff;
+            border-right: 1px solid var(--border);
+            position: fixed;
+            inset: 0 auto 0 0;
+            padding: 25px 16px;
+            display: flex;
+            flex-direction: column;
+            z-index: 10;
         }
 
-        .navbar-brand,
-        .navbar-text {
-            color: white !important;
+        .brand {
+            text-align: center;
+            padding-bottom: 30px;
+            border-bottom: 1px solid var(--border);
         }
 
-        .welcome-box {
-            background: white;
-            border-radius: 12px;
-            padding: 25px;
-            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
-        }
-
-        .info-card {
-            background: white;
-            border: none;
-            border-radius: 12px;
-            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
-            height: 100%;
-        }
-
-        .icon {
+        .brand-icon {
+            width: 62px;
+            height: 62px;
+            margin: 0 auto 12px;
+            border-radius: 18px;
+            background: #dcfaf8;
+            color: var(--primary-dark);
+            display: grid;
+            place-items: center;
             font-size: 32px;
         }
 
-        .card-title {
+        .brand h5 { font-size: 16px; font-weight: 800; margin: 0; }
+        .brand p { color: var(--muted); font-size: 11px; margin: 7px 0 0; }
+
+        .nav-label {
+            color: #a0a6b0;
+            font-size: 10px;
             font-weight: 700;
+            letter-spacing: 1.2px;
+            margin: 25px 10px 10px;
+        }
+
+        .side-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #737c89;
+            padding: 12px 13px;
+            border-radius: 10px;
+            margin-bottom: 5px;
+            transition: .2s;
+        }
+
+        .side-link:hover, .side-link.active {
+            background: #e6fbfa;
+            color: var(--primary-dark);
+        }
+
+        .side-link .nav-icon { width: 22px; text-align: center; font-size: 18px; }
+
+        .logout {
+            margin-top: auto;
+            color: #df6464;
+        }
+
+        .main {
+            margin-left: 235px;
+            margin-right: 275px;
+            padding: 28px 30px 40px;
+            min-height: 100vh;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .topbar h2 { font-size: 23px; font-weight: 800; margin: 0; }
+        .subtitle { color: var(--muted); margin-top: 7px; font-size: 12px; }
+
+        .avatar {
+            width: 42px;
+            height: 42px;
+            display: grid;
+            place-items: center;
+            border-radius: 50%;
+            background: #dff9f7;
+            color: var(--primary-dark);
+            font-weight: 800;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 800;
+            margin: 25px 0 16px;
+        }
+
+        .quick-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 13px;
+        }
+
+        .quick-item {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 15px;
+            padding: 18px 10px;
+            text-align: center;
+            color: var(--text);
+            transition: .2s;
+        }
+
+        .quick-item:hover {
+            transform: translateY(-3px);
+            border-color: #a6efeb;
+            box-shadow: 0 8px 20px rgba(30, 50, 70, .05);
+        }
+
+        .quick-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: #ddfaf8;
+            display: grid;
+            place-items: center;
+            font-size: 22px;
+            margin: 0 auto 12px;
+        }
+
+        .quick-item span:last-child { display: block; font-size: 11px; font-weight: 600; }
+
+        .info-card {
+            height: 100%;
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 15px;
+            padding: 20px;
+        }
+
+        .info-card h3 { font-size: 14px; font-weight: 800; margin-bottom: 17px; }
+
+        .data-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 11px 0;
+            border-bottom: 1px solid #f0f2f5;
+        }
+
+        .data-row:last-child { border-bottom: 0; }
+        .data-label { color: var(--muted); font-size: 12px; }
+        .data-value { font-size: 12px; font-weight: 700; text-align: right; }
+
+        .pill {
+            display: inline-block;
+            padding: 5px 9px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 700;
+            background: #e1f8ed;
+            color: #188753;
+        }
+
+        .empty-state {
+            padding: 16px;
+            border-radius: 10px;
+            background: #fff8e7;
+            color: #87651b;
+            font-size: 12px;
+            line-height: 1.7;
+        }
+
+        .mobile-top { display: none; }
+
+        @media (max-width: 1200px) {
+            .sidebar { width: 205px; }
+            .main { margin-left: 205px; margin-right: 0; }
+            .quick-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                position: static;
+                width: 100%;
+                padding: 12px;
+                border-right: 0;
+                border-bottom: 1px solid var(--border);
+            }
+            .brand { display: flex; align-items: center; gap: 12px; text-align: left; padding-bottom: 12px; }
+            .brand-icon { width: 42px; height: 42px; margin: 0; border-radius: 12px; font-size: 22px; flex-shrink: 0; }
+            .brand p { margin-top: 3px; }
+            .nav-label { margin-top: 12px; }
+            .sidebar nav { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 3px; }
+            .side-link { padding: 9px; margin: 0; font-size: 12px; }
+            .logout { margin-top: 12px; }
+            .main { margin: 0; padding: 22px 15px; }
+            .topbar h2 { font-size: 19px; }
+            .quick-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
         }
     </style>
 </head>
 
 <body>
+<div class="app">
 
-<nav class="navbar navbar-expand-lg">
-    <div class="container">
+    <aside class="sidebar">
+        <div class="brand">
+            <div class="brand-icon">🏠</div>
+            <div>
+                <h5>Quản lý phòng trọ</h5>
+                <p>CỔNG THÔNG TIN NGƯỜI THUÊ</p>
+            </div>
+        </div>
 
-        <a class="navbar-brand fw-bold" href="{% url 'dashboard' %}">
-            🏠 Quản lý phòng trọ
-        </a>
-
-        <div class="d-flex align-items-center gap-3">
-
-            <span class="navbar-text">
-                Xin chào, {{ request.user.first_name|default:request.user.username }}
-            </span>
-
-            <a
-                href="{% url 'logout' %}"
-                class="btn btn-light btn-sm"
-            >
-                Đăng xuất
+        <div class="nav-label">MENU CHÍNH</div>
+        <nav>
+            <a class="side-link active" href="{% url 'dashboard' %}">
+                <span class="nav-icon">⌂</span> Trang chủ
             </a>
+            <a class="side-link" href="{% url 'phong_cua_toi' %}">
+                <span class="nav-icon">🏠</span> Phòng của tôi
+            </a>
+            <a class="side-link" href="#contract-info">
+                <span class="nav-icon">📄</span> Hợp đồng
+            </a>
+            <a class="side-link" href="#utility-info">
+                <span class="nav-icon">⚡</span> Điện & nước
+            </a>
+            <a class="side-link" href="#payment-info">
+                <span class="nav-icon">💳</span> Thanh toán
+            </a>
+        </nav>
 
+        <div class="nav-label">TÀI KHOẢN</div>
+        <a class="side-link" href="#account-info">
+            <span class="nav-icon">⚙️</span> Thông tin cá nhân
+        </a>
+        <a class="side-link logout" href="{% url 'logout' %}">
+            <span class="nav-icon">↪</span> Đăng xuất
+        </a>
+    </aside>
+
+    <main class="main">
+        <header class="topbar">
+            <div>
+                <h2>Xin chào, {{ request.user.first_name|default:request.user.username }} 👋</h2>
+                <div class="subtitle">Chào mừng bạn quay lại cổng thông tin người thuê.</div>
+            </div>
+            <div class="avatar">
+                {{ request.user.username|first|upper }}
+            </div>
+        </header>
+
+        <h3 class="section-title">Truy cập nhanh</h3>
+        <div class="quick-grid">
+            <a class="quick-item" href="{% url 'phong_cua_toi' %}">
+                <span class="quick-icon">🏠</span>
+                <span>Phòng của tôi</span>
+            </a>
+            <a class="quick-item" href="#contract-info">
+                <span class="quick-icon">📄</span>
+                <span>Hợp đồng thuê</span>
+            </a>
+            <a class="quick-item" href="#utility-info">
+                <span class="quick-icon">⚡</span>
+                <span>Điện & nước</span>
+            </a>
         </div>
 
-    </div>
-</nav>
+        <h3 class="section-title">Thông tin thuê phòng</h3>
+        <div class="row g-3">
+            <div class="col-md-6" id="account-info">
+                <section class="info-card">
+                    <h3>🏠 Phòng đang thuê</h3>
 
-<div class="container py-4">
+                    {% if phong %}
+                        <div class="data-row">
+                            <span class="data-label">Tên phòng</span>
+                            <span class="data-value">{{ phong.ten_phong }}</span>
+                        </div>
+                        <div class="data-row">
+                            <span class="data-label">Giá thuê</span>
+                            <span class="data-value">{{ phong.gia_phong|floatformat:0 }} VNĐ/tháng</span>
+                        </div>
+                        <div class="data-row">
+                            <span class="data-label">Diện tích</span>
+                            <span class="data-value">{{ phong.dien_tich }} m²</span>
+                        </div>
+                        <div class="data-row">
+                            <span class="data-label">Trạng thái</span>
+                            <span class="data-value"><span class="pill">Đang thuê</span></span>
+                        </div>
+                    {% else %}
+                        <div class="empty-state">
+                            Bạn chưa có phòng được liên kết với hợp đồng đang có hiệu lực.
+                            Vui lòng liên hệ chủ trọ để kiểm tra thông tin hợp đồng.
+                        </div>
+                    {% endif %}
+                </section>
+            </div>
 
-    <div class="welcome-box mb-4">
+            <div class="col-md-6" id="contract-info">
+                <section class="info-card">
+                    <h3>📄 Hợp đồng thuê</h3>
 
-        <h3 class="fw-bold">
-            Xin chào 👋
-        </h3>
+                    {% if hop_dong %}
+                        <div class="data-row">
+                            <span class="data-label">Người thuê</span>
+                            <span class="data-value">{{ nguoi_thue.ho_ten }}</span>
+                        </div>
+                        <div class="data-row">
+                            <span class="data-label">Ngày bắt đầu</span>
+                            <span class="data-value">{{ hop_dong.ngay_bat_dau|date:"d/m/Y" }}</span>
+                        </div>
+                        <div class="data-row">
+                            <span class="data-label">Ngày kết thúc</span>
+                            <span class="data-value">{{ hop_dong.ngay_ket_thuc|date:"d/m/Y"|default:"Chưa cập nhật" }}</span>
+                        </div>
+                        <div class="data-row">
+                            <span class="data-label">Tiền cọc</span>
+                            <span class="data-value">{{ hop_dong.tien_coc|floatformat:0 }} VNĐ</span>
+                        </div>
+                    {% else %}
+                        <div class="empty-state">
+                            Chưa tìm thấy hợp đồng đang có hiệu lực cho tài khoản của bạn.
+                        </div>
+                    {% endif %}
+                </section>
+            </div>
 
-        <p class="text-muted mb-0">
-            Đây là khu vực quản lý thông tin thuê phòng của bạn.
-        </p>
+            <div class="col-md-6" id="utility-info">
+                <section class="info-card">
+                    <h3>⚡ Điện & nước gần nhất</h3>
 
-    </div>
-
-    <div class="row g-4">
-
-        <!-- Thông tin phòng -->
-        <div class="col-md-6 col-lg-3">
-
-            <div class="card info-card p-4">
-
-                <div class="icon mb-3">
-                    🏠
-                </div>
-
-                <h5 class="card-title">
-                    Phòng của tôi
-                </h5>
-
-                <p class="text-muted">
-                    Xem thông tin phòng đang thuê.
-                </p>
-
-                <a href="#" class="btn btn-primary mt-auto">
-                    Xem phòng
-                </a>
-
+                    {% if dien_nuoc %}
+                        <div class="data-row">
+                            <span class="data-label">Kỳ ghi chỉ số</span>
+                            <span class="data-value">{{ dien_nuoc.thang|date:"m/Y" }}</span>
+                        </div>
+                        <div class="data-row">
+                            <span class="data-label">Tiền điện</span>
+                            <span class="data-value">{{ dien_nuoc.tien_dien|floatformat:0 }} VNĐ</span>
+                        </div>
+                        <div class="data-row">
+                            <span class="data-label">Tiền nước</span>
+                            <span class="data-value">{{ dien_nuoc.tien_nuoc|floatformat:0 }} VNĐ</span>
+                        </div>
+                    {% else %}
+                        <div class="empty-state">
+                            Chưa có dữ liệu điện nước cho phòng của bạn.
+                        </div>
+                    {% endif %}
+                </section>
             </div>
 
         </div>
-
-        <!-- Hợp đồng -->
-        <div class="col-md-6 col-lg-3">
-
-            <div class="card info-card p-4">
-
-                <div class="icon mb-3">
-                    📄
-                </div>
-
-                <h5 class="card-title">
-                    Hợp đồng
-                </h5>
-
-                <p class="text-muted">
-                    Xem thông tin hợp đồng thuê phòng.
-                </p>
-
-                <a href="#" class="btn btn-primary mt-auto">
-                    Xem hợp đồng
-                </a>
-
-            </div>
-
-        </div>
-
-        <!-- Điện nước -->
-        <div class="col-md-6 col-lg-3">
-
-            <div class="card info-card p-4">
-
-                <div class="icon mb-3">
-                    ⚡
-                </div>
-
-                <h5 class="card-title">
-                    Điện & nước
-                </h5>
-
-                <p class="text-muted">
-                    Theo dõi chỉ số và chi phí điện nước.
-                </p>
-
-                <a href="#" class="btn btn-primary mt-auto">
-                    Xem điện nước
-                </a>
-
-            </div>
-
-        </div>
-
-        <!-- Thanh toán -->
-        <div class="col-md-6 col-lg-3">
-
-            <div class="card info-card p-4">
-
-                <div class="icon mb-3">
-                    💰
-                </div>
-
-                <h5 class="card-title">
-                    Thanh toán
-                </h5>
-
-                <p class="text-muted">
-                    Xem tiền phòng và tình trạng thanh toán.
-                </p>
-
-                <a href="#" class="btn btn-primary mt-auto">
-                    Xem thanh toán
-                </a>
-
-            </div>
-
-        </div>
-
-    </div>
+    </main>
 
 </div>
-
 </body>
 </html>
