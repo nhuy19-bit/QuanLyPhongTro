@@ -226,27 +226,49 @@ class ThanhToanAdmin(admin.ModelAdmin):
     def tong_tien_hien_thi(self, obj):
         return f'{obj.tong_tien:,.0f} VNĐ'
 
+
 @admin.register(TaiKhoan)
 class TaiKhoanAdmin(admin.ModelAdmin):
     list_display = (
         'user',
+        'ho_ten_hien_thi',
+        'email_hien_thi',
         'vai_tro',
         'so_dien_thoai',
     )
 
-    list_filter = (
-        'vai_tro',
-    )
+    list_filter = ('vai_tro',)
 
     search_fields = (
         'user__username',
         'user__email',
         'so_dien_thoai',
+        'user__first_name',
+        'user__last_name',
+        'ho_so_nguoi_thue__ho_ten',
+        'ho_so_nguoi_thue__email',
     )
 
-    ordering = (
-        'user__username',
-    )
+    ordering = ('user__username',)
+
+    @admin.display(description='Họ tên')
+    def ho_ten_hien_thi(self, obj):
+        try:
+            return obj.ho_so_nguoi_thue.ho_ten
+        except Exception:
+            return obj.user.get_full_name() or 'Chưa cập nhật'
+
+    @admin.display(description='Email')
+    def email_hien_thi(self, obj):
+        try:
+            email = obj.ho_so_nguoi_thue.email
+            if email:
+                return email
+        except Exception:
+            pass
+
+        return obj.user.email or 'Chưa cập nhật'
+
 
 admin.site.site_header = "QUẢN LÝ PHÒNG TRỌ"
 admin.site.site_title = "Quản lý phòng trọ"

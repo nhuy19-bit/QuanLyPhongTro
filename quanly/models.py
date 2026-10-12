@@ -27,6 +27,14 @@ class Phong(models.Model):
         return self.ten_phong
     
 class NguoiThue(models.Model):
+    tai_khoan = models.OneToOneField(
+        'TaiKhoan',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='ho_so_nguoi_thue'
+    )
+
     ho_ten = models.CharField(max_length=100)
     ngay_sinh = models.DateField(blank=True, null=True)
     so_cccd = models.CharField(max_length=20, unique=True)

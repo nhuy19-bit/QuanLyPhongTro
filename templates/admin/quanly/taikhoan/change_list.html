@@ -158,27 +158,47 @@
 
         <div class="account-info">
 
-            <div>
-                <strong>Họ tên:</strong>
-                {{ object.user.get_full_name|default:"Chưa cập nhật" }}
-            </div>
 
-            <div>
-                <strong>Vai trò:</strong>
-                <span class="role">
-                    {{ object.get_vai_tro_display }}
-                </span>
-            </div>
+        <div>
+            <strong>Họ tên:</strong>
+            {% if object.ho_so_nguoi_thue %}
+                {{ object.ho_so_nguoi_thue.ho_ten }}
+            {% elif object.user.get_full_name %}
+                {{ object.user.get_full_name }}
+            {% else %}
+                Chưa cập nhật
+            {% endif %}
+        </div>
 
-            <div>
-                <strong>Số điện thoại:</strong>
-                {{ object.so_dien_thoai|default:"Chưa cập nhật" }}
-            </div>
+        <div>
+            <strong>Vai trò:</strong>
+            <span class="role">
+                {{ object.get_vai_tro_display }}
+            </span>
+        </div>
 
-            <div>
-                <strong>Email:</strong>
-                {{ object.user.email|default:"Chưa cập nhật" }}
-            </div>
+        <div>
+            <strong>Số điện thoại:</strong>
+            {% if object.so_dien_thoai %}
+                {{ object.so_dien_thoai }}
+            {% elif object.ho_so_nguoi_thue %}
+                {{ object.ho_so_nguoi_thue.so_dien_thoai }}
+            {% else %}
+                Chưa cập nhật
+            {% endif %}
+        </div>
+
+        <div>
+            <strong>Email:</strong>
+            {% if object.ho_so_nguoi_thue and object.ho_so_nguoi_thue.email %}
+                {{ object.ho_so_nguoi_thue.email }}
+            {% elif object.user.email %}
+                {{ object.user.email }}
+            {% else %}
+                Chưa cập nhật
+            {% endif %}
+        </div>
+
 
         </div>
 

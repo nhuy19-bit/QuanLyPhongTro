@@ -2,7 +2,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
-
+from .models import HopDong, DienNuoc, ThanhToan
 from .models import TaiKhoan
 from .models import Phong
 from django.shortcuts import get_object_or_404
@@ -129,22 +129,67 @@ def dashboard(request):
     if not request.user.is_authenticated:
         return redirect('login')
 
-    if request.user.is_superuser:
+    try:
+        tai_khoan = request.user.tai_khoan
+    except TaiKhoan.DoesNotExist:
+        return redirect('login')
+
+    if tai_khoan.vai_tro != 'nguoi_thue':
         return redirect('admin:index')
 
+    # Lấy hồ sơ người thuê đã liên kết với tài khoản
+    from .models import NguoiThue
+
     try:
-        vai_tro = request.user.tai_khoan.vai_tro
-    except Exception:
+        nguoi_thue = tai_khoan.ho_so_nguoi_thue
+    except NguoiThue.DoesNotExist:
         return render(
             request,
-            'dashboard.html',
-            {'error': 'Tài khoản chưa được thiết lập vai trò.'}
+            'dashboard_nguoi_thue.html',
+            {
+                'tai_khoan': tai_khoan,
+                'error': 'Tài khoản chưa được liên kết với hồ sơ người thuê.'
+            }
         )
 
-    if vai_tro == 'nguoi_thue':
-        return render(request, 'dashboard_nguoi_thue.html')
+    # Lấy hợp đồng đang có hiệu lực của người thuê
+    hop_dong = HopDong.objects.filter(
+        nguoi_thue=nguoi_thue,
+        trang_thai='hieu_luc'
+    ).select_related(
+        'phong',
+        'nguoi_thue'
+    ).order_by('-ngay_bat_dau').first()
 
-    return redirect('admin:index')
+    phong = hop_dong.phong if hop_dong else None
+
+    # Lấy dữ liệu điện nước mới nhất của phòng
+    dien_nuoc = None
+    thanh_toan = None
+
+    if phong:
+        dien_nuoc = DienNuoc.objects.filter(
+            phong=phong
+        ).order_by('-thang').first()
+
+        thanh_toan = ThanhToan.objects.filter(
+            phong=phong
+        ).order_by('-thang').first()
+
+    context = {
+        'tai_khoan': tai_khoan,
+        'nguoi_thue': nguoi_thue,
+        'hop_dong': hop_dong,
+        'phong': phong,
+        'dien_nuoc': dien_nuoc,
+        'thanh_toan': thanh_toan,
+    }
+
+    return render(
+        request,
+        'dashboard_nguoi_thue.html',
+        context
+    )
 
 def danh_sach_phong(request):
     if not request.user.is_authenticated:
