@@ -1,0 +1,448 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Quản lý phòng trọ{% endblock %}
+
+{% block branding %}
+<div id="branding">
+    <a href="{% url 'admin:index' %}">
+        🏠 QUẢN LÝ PHÒNG TRỌ
+    </a>
+</div>
+{% endblock %}
+
+{% block nav-sidebar %}
+
+<div class="custom-sidebar">
+
+    <div class="sidebar-brand">
+        <div class="brand-name">
+            QUẢN LÝ PHÒNG TRỌ
+        </div>
+
+        <div class="brand-subtitle">
+            RENTAL ROOM MANAGEMENT
+        </div>
+    </div>
+
+    <div class="sidebar-user">
+        Xin chào, {{ user.username }}
+    </div>
+
+    <div class="sidebar-menu">
+
+        <!-- TỔNG QUAN -->
+        <a href="{% url 'admin_dashboard' %}"
+            class="sidebar-link {% if request.resolver_match.url_name == 'admin_dashboard' %}active{% endif %}">
+            <span>📊</span>
+            <span>Tổng quan</span>
+        </a>
+
+
+        <!-- QUẢN LÝ -->
+        <div class="sidebar-section">
+            QUẢN LÝ
+        </div>
+
+        <a href="{% url 'admin:quanly_taikhoan_changelist' %}"
+            class="sidebar-link {% if request.resolver_match.url_name == 'quanly_taikhoan_changelist' %}active{% endif %}">
+            <span>👤</span>
+            <span>Tài khoản</span>
+        </a>
+
+        <a href="{% url 'admin:quanly_phong_changelist' %}"
+            class="sidebar-link {% if request.resolver_match.url_name == 'quanly_phong_changelist' %}active{% endif %}">
+            <span>🏠</span>
+            <span>Phòng</span>
+        </a>
+
+        <a href="{% url 'admin:quanly_nguoithue_changelist' %}"
+            class="sidebar-link {% if request.resolver_match.url_name == 'quanly_nguoithue_changelist' %}active{% endif %}">
+            <span>👥</span>
+            <span>Người thuê</span>
+        </a>
+
+        <a href="{% url 'admin:quanly_hopdong_changelist' %}"
+            class="sidebar-link {% if request.resolver_match.url_name == 'quanly_hopdong_changelist' %}active{% endif %}">
+            <span>📄</span>
+            <span>Hợp đồng</span>
+        </a>
+
+        <a href="{% url 'admin:quanly_diennuoc_changelist' %}"
+            class="sidebar-link {% if request.resolver_match.url_name == 'quanly_diennuoc_changelist' %}active{% endif %}">
+            <span>💡</span>
+            <span>Điện nước</span>
+        </a>
+
+        <a href="{% url 'admin:quanly_thanhtoan_changelist' %}"
+            class="sidebar-link {% if request.resolver_match.url_name == 'quanly_thanhtoan_changelist' %}active{% endif %}">
+            <span>💰</span>
+            <span>Thanh toán</span>
+        </a>
+
+
+        <!-- HỆ THỐNG -->
+        <div class="sidebar-section">
+            HỆ THỐNG
+        </div>
+
+        <a href="{% url 'admin:auth_user_changelist' %}"
+           class="sidebar-link">
+            <span>👥</span>
+            <span>Users</span>
+        </a>
+
+        <a href="{% url 'admin:auth_group_changelist' %}"
+           class="sidebar-link">
+            <span>🔐</span>
+            <span>Groups</span>
+        </a>
+
+    </div>
+
+</div>
+
+{% endblock %}
+
+
+{% block extrastyle %}
+{{ block.super }}
+
+<style>
+
+/* =====================================
+   ẨN SIDEBAR MẶC ĐỊNH
+   ===================================== */
+
+#nav-sidebar {
+    display: none !important;
+}
+
+
+/* =====================================
+   HEADER
+   ===================================== */
+
+#header {
+    height: 60px;
+    background: #03203a;
+    padding: 0 20px;
+    box-sizing: border-box;
+}
+
+#branding {
+    display: flex;
+    align-items: center;
+    height: 60px;
+}
+
+#branding a {
+    color: white !important;
+    font-size: 20px;
+    font-weight: 700;
+    text-decoration: none !important;
+}
+
+
+/* =====================================
+   SIDEBAR
+   ===================================== */
+
+.custom-sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 230px;
+    height: 100vh;
+
+    background: #29445b;
+    color: white;
+
+    z-index: 1000;
+    overflow-y: auto;
+}
+
+/* =====================================
+   TRANG ĐĂNG NHẬP ADMIN
+   ===================================== */
+
+body.login .custom-sidebar {
+    display: none !important;
+}
+
+body.login #header {
+    display: none !important;
+}
+
+body.login #main {
+    margin-left: 0 !important;
+    width: 100% !important;
+}
+
+body.login #content {
+    width: 350px !important;
+    margin: 70px auto 0 !important;
+    padding: 0 !important;
+}
+
+/* Logo */
+
+.sidebar-brand {
+    height: 95px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    padding-left: 10px;
+
+    border-bottom: 1px solid rgba(255,255,255,0.12);
+}
+
+.brand-name {
+    font-size: 20px;
+    font-weight: 600;
+    color: white;
+}
+
+.brand-subtitle {
+    margin-top: 8px;
+
+    font-size: 12px;
+    color: #91a5b8;
+    letter-spacing: 1px;
+
+    text-align: center;
+    width: 200px;
+}
+
+
+/* User */
+
+.sidebar-user {
+    padding: 18px 10px;
+
+    font-size: 13px;
+    color: #d7e0e8;
+
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+
+/* Section */
+
+.sidebar-section {
+    padding: 18px 15px 8px;
+
+    font-size: 11px;
+    font-weight: 700;
+
+    color: #91a5b8;
+
+    letter-spacing: 1px;
+}
+
+
+/* Menu */
+
+.sidebar-link {
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    padding: 13px 15px;
+
+    color: #ffffff !important;
+
+    text-decoration: none !important;
+
+    font-size: 14px;
+
+    border-left: 4px solid transparent;
+
+    transition: 0.2s;
+}
+
+.sidebar-link:hover {
+    background: #344f66;
+    color: white !important;
+}
+
+.sidebar-link.active {
+    background: #344f66;
+    border-left-color: #20c9a6;
+}
+
+.sidebar-link span:first-child {
+    width: 20px;
+    text-align: center;
+    font-size: 16px;
+}
+
+
+/* =====================================
+   ĐẨY NỘI DUNG SANG PHẢI SIDEBAR
+   ===================================== */
+
+#main {
+    margin-left: 230px !important;
+    width: calc(100% - 230px);
+    box-sizing: border-box;
+}
+
+#content {
+    margin-left: 0 !important;
+    padding: 25px 35px 40px !important;
+    box-sizing: border-box;
+}
+
+#content-main {
+    width: 100% !important;
+    max-width: none !important;
+}
+
+
+
+/* Trang Tổng quan không dùng tiêu đề mặc định của Django */
+body:has(.dashboard-page) #content > h1 {
+    display: none !important;
+}
+
+
+
+/* =====================================
+   ẨN BRANDING CŨ CỦA DJANGO
+   ===================================== */
+
+#header #branding {
+    display: none;
+}
+
+
+/* =====================================
+   MODULE
+   ===================================== */
+
+.module {
+    border-radius: 6px;
+    border: 1px solid #e1e5e8;
+    overflow: hidden;
+}
+
+
+/* =====================================
+   BUTTON
+   ===================================== */
+
+.button,
+input[type=submit],
+input[type=button],
+.submit-row input,
+a.button {
+    border-radius: 5px;
+}
+
+
+/* =====================================
+   MOBILE
+   ===================================== */
+
+@media (max-width: 900px) {
+
+    .custom-sidebar {
+        width: 210px;
+    }
+
+    #main {
+        margin-left: 210px;
+    }
+
+}
+
+/* =====================================
+   THANH CHANGE PASSWORD / LOG OUT
+   ===================================== */
+
+#header {
+    height: 60px !important;
+    margin-left: 230px !important;
+    width: calc(100% - 230px) !important;
+    background: #2d4356 !important;
+    padding: 0 20px !important;
+    box-sizing: border-box;
+}
+
+#user-tools {
+    position: absolute !important;
+    right: 20px !important;
+    top: 0 !important;
+
+    height: 60px !important;
+
+    display: flex !important;
+    align-items: center !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    color: white !important;
+    white-space: nowrap !important;
+}
+
+#user-tools a {
+    color: white !important;
+    text-decoration: none !important;
+}
+
+#user-tools a:hover {
+    color: #20c9a6 !important;
+}
+
+/* =====================================
+   HEADER - THANH XANH ĐẬM
+   ===================================== */
+
+#header {
+    height: 60px !important;
+    margin-left: 230px !important;
+    width: calc(100% - 230px) !important;
+    background: #26384a !important;
+    padding: 0 20px !important;
+    box-sizing: border-box !important;
+}
+
+
+/* =====================================
+   USER TOOLS
+   ===================================== */
+
+#user-tools {
+    position: absolute !important;
+    right: 20px !important;
+    top: 0 !important;
+    height: 60px !important;
+
+    display: flex !important;
+    align-items: center !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    white-space: nowrap !important;
+}
+
+
+/* =====================================
+   KHÔNG ẨN BREADCRUMB
+   ===================================== */
+
+#nav-breadcrumbs {
+    display: block !important;
+    margin-left: 230px !important;
+    width: calc(100% - 230px) !important;
+    padding-left: 15px !important;
+    box-sizing: border-box !important;
+}
+</style>
+
+{% endblock %}

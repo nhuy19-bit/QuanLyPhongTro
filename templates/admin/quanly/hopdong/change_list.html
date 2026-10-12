@@ -1,0 +1,313 @@
+{% extends "admin/change_list.html" %}
+
+{% block content %}
+
+<style>
+
+    .contract-toolbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        gap: 15px;
+        flex-wrap: wrap;
+    }
+
+    .contract-toolbar h1 {
+        margin-bottom: 5px;
+        color: #52708f;
+    }
+
+
+    /* =========================
+       GRID
+       ========================= */
+
+    .contract-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 18px;
+    }
+
+
+    /* =========================
+       CARD
+       ========================= */
+
+    .contract-card {
+        background: white;
+        border: 1px solid #dce3eb;
+        border-radius: 6px;
+        padding: 14px;
+        min-height: 220px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+        transition: 0.2s;
+    }
+
+    .contract-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 5px 14px rgba(0,0,0,0.12);
+    }
+
+
+    /* =========================
+       TIÊU ĐỀ
+       ========================= */
+
+    .contract-name {
+        font-size: 19px;
+        font-weight: 700;
+        color: #52708f;
+        margin-bottom: 12px;
+    }
+
+
+    /* =========================
+       TRẠNG THÁI
+       ========================= */
+
+    .contract-status {
+        display: inline-block;
+        padding: 5px 10px;
+        border-radius: 5px;
+        font-size: 12px;
+        font-weight: 600;
+        margin-bottom: 12px;
+    }
+
+    .status-active {
+        background: #d1f7e9;
+        color: #417690;
+    }
+
+    .status-expired {
+        background: #f8d7da;
+        color: #842029;
+    }
+
+    .status-cancelled {
+        background: #e9ecef;
+        color: #495057;
+    }
+
+
+    /* =========================
+       THÔNG TIN
+       ========================= */
+
+    .contract-info {
+        color: #555;
+        margin-bottom: 7px;
+        font-size: 14px;
+        line-height: 1.6;
+    }
+
+    .contract-info strong {
+        color: #34495e;
+    }
+
+
+    /* =========================
+       NÚT
+       ========================= */
+
+    .contract-actions {
+        display: flex;
+        gap: 7px;
+        margin-top: 15px;
+    }
+
+    .contract-actions a {
+        display: inline-block;
+        color: white !important;
+        text-decoration: none !important;
+        padding: 7px 12px;
+        border-radius: 5px;
+        font-size: 12px;
+        font-weight: 600;
+        line-height: normal;
+        vertical-align: top;
+    }
+
+    .btn-edit {
+        background: #417690;
+    }
+
+    .btn-edit:hover {
+        background: #417690;
+    }
+
+    .btn-delete {
+        background: #dc3545;
+    }
+
+    .btn-delete:hover {
+        background: #dc3545;
+    }
+
+
+    /* =========================
+       NÚT THÊM
+       ========================= */
+
+    .btn-add-contract {
+        display: inline-block;
+        background: #417690 !important;
+        color: white !important;
+        border-radius: 5px;
+        padding: 10px 16px;
+        font-weight: 600;
+        text-decoration: none !important;
+        line-height: normal;
+    }
+
+    .btn-add-contract:hover {
+        background: #417690 !important;
+    }
+
+
+    /* =========================
+       ẨN GIAO DIỆN MẶC ĐỊNH
+       ========================= */
+
+    #content > h1 {
+        display: none;
+    }
+
+    .object-tools {
+        display: none;
+    }
+
+    #toolbar {
+        display: none;
+    }
+
+    .actions {
+        display: none;
+    }
+
+    .paginator {
+        display: none;
+    }
+
+</style>
+
+
+<div class="contract-toolbar">
+
+    <div>
+
+        <h1>
+            Danh sách hợp đồng
+        </h1>
+
+    </div>
+
+
+    <div>
+
+        <a
+            href="{% url 'admin:quanly_hopdong_add' %}"
+            class="btn-add-contract"
+        >
+            + Thêm hợp đồng
+        </a>
+
+    </div>
+
+</div>
+
+
+<div class="contract-grid">
+
+    {% for hop_dong in cl.result_list %}
+
+        <div class="contract-card">
+
+            <div class="contract-name">
+                📄 Hợp đồng #{{ hop_dong.id }}
+            </div>
+
+
+            {% if hop_dong.trang_thai == "hieu_luc" %}
+
+                <span class="contract-status status-active">
+                    Đang hiệu lực
+                </span>
+
+            {% elif hop_dong.trang_thai == "het_han" %}
+
+                <span class="contract-status status-expired">
+                    Hết hạn
+                </span>
+
+            {% else %}
+
+                <span class="contract-status status-cancelled">
+                    Đã hủy
+                </span>
+
+            {% endif %}
+
+
+            <div class="contract-info">
+                🏠 <strong>Phòng:</strong>
+                {{ hop_dong.phong }}
+            </div>
+
+
+            <div class="contract-info">
+                👤 <strong>Người thuê:</strong>
+                {{ hop_dong.nguoi_thue }}
+            </div>
+
+
+            <div class="contract-info">
+                📅 <strong>Ngày bắt đầu:</strong>
+                {{ hop_dong.ngay_bat_dau }}
+            </div>
+
+
+            <div class="contract-info">
+                📅 <strong>Ngày kết thúc:</strong>
+                {{ hop_dong.ngay_ket_thuc }}
+            </div>
+
+
+            <div class="contract-info">
+                💰 <strong>Tiền cọc:</strong>
+                {{ hop_dong.tien_coc|floatformat:0 }} VNĐ
+            </div>
+
+
+            <div class="contract-actions">
+
+                <a
+                    href="{% url 'admin:quanly_hopdong_change' hop_dong.id %}"
+                    class="btn-edit"
+                >
+                    ✏ Sửa
+                </a>
+
+                <a
+                    href="{% url 'admin:quanly_hopdong_delete' hop_dong.id %}"
+                    class="btn-delete"
+                >
+                    🗑 Xóa
+                </a>
+
+            </div>
+
+        </div>
+
+    {% empty %}
+
+        <div class="alert alert-info">
+            Chưa có hợp đồng nào.
+        </div>
+
+    {% endfor %}
+
+</div>
+
+{% endblock %}

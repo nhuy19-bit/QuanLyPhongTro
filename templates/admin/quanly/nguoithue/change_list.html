@@ -1,0 +1,198 @@
+{% extends "admin/change_list.html" %}
+
+{% block content %}
+
+<style>
+    .tenant-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .tenant-title {
+        font-size: 24px;
+        font-weight: 600;
+        color: #26384a;
+    }
+
+    .add-btn {
+        background: #417690;
+        color: white !important;
+        padding: 10px 16px;
+        border-radius: 5px;
+        text-decoration: none !important;
+        font-size: 14px;
+    }
+
+    .add-btn:hover {
+        background: #315d73;
+    }
+
+    .tenant-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+        gap: 18px;
+    }
+
+    .tenant-card {
+        background: white;
+        border: 1px solid #dce3eb;
+        border-radius: 6px;
+        padding: 18px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+        transition: 0.2s;
+    }
+
+    .tenant-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.10);
+    }
+
+    .tenant-name {
+        font-size: 18px;
+        font-weight: 600;
+        color: #29445b;
+        margin-bottom: 14px;
+    }
+
+    .tenant-info {
+        font-size: 13px;
+        color: #596875;
+        line-height: 1.8;
+    }
+
+    .tenant-info strong {
+        color: #34495e;
+    }
+
+    .tenant-actions {
+        display: flex;
+        gap: 8px;
+        margin-top: 15px;
+    }
+
+    .edit-btn,
+    .delete-btn {
+        padding: 7px 12px;
+        border-radius: 4px;
+        text-decoration: none !important;
+        font-size: 12px;
+    }
+
+    .edit-btn {
+        background: #417690;
+        color: white !important;
+    }
+
+    .delete-btn {
+        background: #dc3545;
+        color: white !important;
+    }
+
+    /* Ẩn giao diện mặc định */
+    #content > h1 {
+        display: none;
+    }
+
+    .object-tools {
+        display: none;
+    }
+
+    #toolbar {
+        display: none;
+    }
+
+    .actions {
+        display: none;
+    }
+
+    .paginator {
+        display: none;
+    }
+
+    #changelist-form {
+        display: none;
+    }
+</style>
+
+
+<div class="tenant-header">
+
+    <div class="tenant-title">
+        👥 Người thuê
+    </div>
+
+    <a href="{% url 'admin:quanly_nguoithue_add' %}" class="add-btn">
+        + Thêm người thuê
+    </a>
+
+</div>
+
+
+<div class="tenant-grid">
+
+    {% for object in cl.result_list %}
+
+    <div class="tenant-card">
+
+        <div class="tenant-name">
+            {{ object.ho_ten }}
+        </div>
+
+        <div class="tenant-info">
+
+            <div>
+                <strong>CCCD:</strong>
+                {{ object.so_cccd }}
+            </div>
+
+            <div>
+                <strong>SĐT:</strong>
+                {{ object.so_dien_thoai }}
+            </div>
+
+            <div>
+                <strong>Email:</strong>
+                {{ object.email|default:"Chưa cập nhật" }}
+            </div>
+
+            <div>
+                <strong>Địa chỉ:</strong>
+                {{ object.dia_chi|default:"Chưa cập nhật" }}
+            </div>
+
+        </div>
+
+
+        <div class="tenant-actions">
+
+            <a
+                href="{% url 'admin:quanly_nguoithue_change' object.pk %}"
+                class="edit-btn"
+            >
+                ✏ Sửa
+            </a>
+
+            <a
+                href="{% url 'admin:quanly_nguoithue_delete' object.pk %}"
+                class="delete-btn"
+            >
+                🗑 Xóa
+            </a>
+
+        </div>
+
+    </div>
+
+    {% empty %}
+
+    <div>
+        Chưa có người thuê nào.
+    </div>
+
+    {% endfor %}
+
+</div>
+
+{% endblock %}

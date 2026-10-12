@@ -1,17 +1,28 @@
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 
 from .models import TaiKhoan
+from .models import Phong
+from django.shortcuts import get_object_or_404
 
 def home(request):
-    return render(request, 'home.html')
+    danh_sach_phong = Phong.objects.all().order_by('ten_phong')
+    return render(
+        request,
+        'home.html',
+        {
+            'danh_sach_phong': danh_sach_phong,
+            'tong_so_phong': danh_sach_phong.count(),
+            'phong_trong': danh_sach_phong.filter(trang_thai='trong').count(),
+            'phong_dang_thue': danh_sach_phong.filter(trang_thai='dang_thue').count(),
+            'phong_bao_tri': danh_sach_phong.filter(trang_thai='bao_tri').count(),
+        }
+    )
 
 
 def dang_nhap(request):
-    if request.user.is_superuser:
-        return redirect('admin:index')
-
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
@@ -24,7 +35,18 @@ def dang_nhap(request):
 
         if user is not None:
             login(request, user)
-            return redirect('dashboard')
+
+            # Nếu là tài khoản người thuê
+            if hasattr(user, 'tai_khoan') and user.tai_khoan.vai_tro == 'nguoi_thue':
+                return redirect('dashboard')
+
+            return render(
+                request,
+                'login.html',
+                {
+                    'error': 'Tài khoản này không phải tài khoản người thuê.'
+                }
+            )
 
         return render(
             request,
@@ -33,11 +55,8 @@ def dang_nhap(request):
         )
 
     return render(request, 'login.html')
-
 def dang_ky(request):
-    if request.user.is_authenticated:
-        return redirect('dashboard')
-
+    
     if request.method == 'POST':
         ho_ten = request.POST.get('ho_ten', '').strip()
         username = request.POST.get('username', '').strip()
@@ -122,7 +141,135 @@ def dashboard(request):
             {'error': 'Tài khoản chưa được thiết lập vai trò.'}
         )
 
-    if vai_tro == 'chu_tro':
-        return render(request, 'dashboard_chu_tro.html')
+    if vai_tro == 'nguoi_thue':
+        return render(request, 'dashboard_nguoi_thue.html')
 
-    return render(request, 'dashboard_nguoi_thue.html')
+    return redirect('admin:index')
+
+def danh_sach_phong(request):
+    if not request.user.is_authenticated:
+        return redirect('login')
+
+    danh_sach = Phong.objects.all()
+
+    return render(
+        request,
+        'phong_list.html',
+        {
+            'danh_sach': danh_sach
+        }
+    )
+
+
+def them_phong(request):
+    if not request.user.is_authenticated:
+        return redirect('login')
+
+    if request.method == 'POST':
+        ten_phong = request.POST.get('ten_phong')
+        gia_phong = request.POST.get('gia_phong')
+        dien_tich = request.POST.get('dien_tich')
+        trang_thai = request.POST.get('trang_thai')
+        mo_ta = request.POST.get('mo_ta')
+
+        Phong.objects.create(
+            ten_phong=ten_phong,
+            gia_phong=gia_phong,
+            dien_tich=dien_tich,
+            trang_thai=trang_thai,
+            mo_ta=mo_ta
+        )
+
+        return redirect('phong_list')
+
+    return render(
+        request,
+        'phong_form.html'
+    )
+
+
+def sua_phong(request, id):
+    phong = get_object_or_404(Phong, id=id)
+
+    if request.method == 'POST':
+        phong.ten_phong = request.POST.get('ten_phong')
+        phong.gia_phong = request.POST.get('gia_phong')
+        phong.dien_tich = request.POST.get('dien_tich')
+        phong.trang_thai = request.POST.get('trang_thai')
+        phong.mo_ta = request.POST.get('mo_ta')
+
+        phong.save()
+
+        return redirect('phong_list')
+
+    return render(
+        request,
+        'phong_form.html',
+        {
+            'phong': phong
+        }
+    )
+
+
+def xoa_phong(request, id):
+    phong = get_object_or_404(Phong, id=id)
+
+    if request.method == 'POST':
+        phong.delete()
+        return redirect('phong_list')
+
+    return render(
+        request,
+        'phong_confirm_delete.html',
+        {
+            'phong': phong
+        }
+    )
+
+@staff_member_required
+def admin_dashboard(request):
+    from .models import (
+        Phong,
+        NguoiThue,
+        HopDong,
+        DienNuoc,
+        ThanhToan,
+        TaiKhoan,
+    )
+    from django.contrib import admin
+
+    context = admin.site.each_context(request)
+
+    context.update({
+        'title': 'Tổng quan',
+
+        'tong_phong': Phong.objects.count(),
+
+        'phong_trong': Phong.objects.filter(
+            trang_thai='trong'
+        ).count(),
+
+        'phong_dang_thue': Phong.objects.filter(
+            trang_thai='dang_thue'
+        ).count(),
+
+        'phong_bao_tri': Phong.objects.filter(
+            trang_thai='bao_tri'
+        ).count(),
+
+        'tong_nguoi_thue': NguoiThue.objects.count(),
+
+        'tong_hop_dong': HopDong.objects.count(),
+
+        'tong_dien_nuoc': DienNuoc.objects.count(),
+
+        'tong_thanh_toan': ThanhToan.objects.count(),
+
+        'tong_tai_khoan': TaiKhoan.objects.count(),
+    })
+
+    return render(
+        request,
+        'admin/dashboard.html',
+        context
+    )

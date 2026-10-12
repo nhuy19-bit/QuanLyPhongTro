@@ -15,25 +15,49 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, re_path
+from quanly import views
 
 from quanly.views import (
     home,
     dang_nhap,
-    dang_ky,
     dang_xuat,
     dashboard,
+    admin_dashboard,
 )
 
 
 urlpatterns = [
+    re_path(r'^admin/$', admin_dashboard, name='admin_dashboard'),
     path('admin/', admin.site.urls),
+
+    path(
+        'phong/',
+        views.danh_sach_phong,
+        name='phong_list'
+    ),
+
+    path(
+        'phong/them/',
+        views.them_phong,
+        name='them_phong'
+    ),
+
+    path(
+        'phong/sua/<int:id>/',
+        views.sua_phong,
+        name='sua_phong'
+    ),
+
+    path(
+        'phong/xoa/<int:id>/',
+        views.xoa_phong,
+        name='xoa_phong'
+    ),
 
     path('', home, name='home'),
 
     path('dang-nhap/', dang_nhap, name='login'),
-
-    path('dang-ky/', dang_ky, name='register'),
 
     path('dang-xuat/', dang_xuat, name='logout'),
 

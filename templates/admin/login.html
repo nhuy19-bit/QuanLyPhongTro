@@ -1,0 +1,201 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Đăng nhập - Quản lý phòng trọ{% endblock %}
+
+{% block bodyclass %}login{% endblock %}
+
+{% block extrastyle %}
+{{ block.super }}
+
+<style>
+    body.login {
+        background: #eef3f7;
+    }
+
+    body.login #header {
+        display: none;
+    }
+
+    body.login .custom-sidebar {
+        display: none !important;
+    }
+
+    body.login #main {
+        margin-left: 0 !important;
+        padding-left: 0 !important;
+        width: 100% !important;
+        display: block !important;
+    }
+
+    body.login #nav-sidebar {
+        display: none !important;
+    }
+
+    body.login .toggle-nav-sidebar,
+    body.login #content > h1 {
+        display: none !important;
+    }
+
+    body.login #content {
+        width: min(520px, calc(100% - 32px)) !important;
+        max-width: none !important;
+        margin: 70px auto 0 !important;
+        padding: 0 !important;
+        float: none !important;
+    }
+
+    body.login #content-main {
+        width: 100% !important;
+    }
+
+    body.login .sidebar,
+    body.login #nav-sidebar,
+    body.login #user-tools,
+    body.login .breadcrumbs {
+        display: none !important;
+    }
+    .login-box {
+        background: #fff;
+        border-radius: 8px;
+        overflow: hidden;
+        border: 1px solid #dce4eb;
+        box-shadow: 0 5px 18px rgba(0, 0, 0, 0.10);
+    }
+
+    .login-title {
+        background: #29445b;
+        color: white;
+        text-align: center;
+        padding: 18px 15px;
+    }
+
+    .login-title .icon {
+        font-size: 25px;
+        margin-bottom: 5px;
+    }
+
+    .login-title h1 {
+        margin: 0;
+        font-size: 18px;
+        font-weight: 600;
+    }
+
+    .login-title p {
+        margin: 5px 0 0;
+        color: #cbd8e2;
+        font-size: 11px;
+    }
+
+    .login-form {
+        padding: 20px;
+    }
+
+    .login-form .form-row {
+        margin-bottom: 14px;
+    }
+
+    .login-form label {
+        display: block;
+        margin-bottom: 5px;
+        font-size: 13px;
+        font-weight: 600;
+        color: #34495e;
+    }
+
+    .login-form input[type="text"],
+    .login-form input[type="password"] {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 8px 10px;
+        border: 1px solid #cbd5df;
+        border-radius: 5px;
+        font-size: 13px;
+    }
+
+    .submit-row {
+        padding: 0 !important;
+        margin: 18px 0 0 !important;
+        border: none !important;
+        background: transparent !important;
+    }
+
+    .submit-row input[type="submit"] {
+        width: 100%;
+        padding: 9px;
+        border: none;
+        border-radius: 5px;
+        background: #417690;
+        color: white;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+    .submit-row input[type="submit"]:hover {
+        background: #315d73;
+    }
+
+    .errornote {
+        border-radius: 5px;
+        margin-bottom: 15px;
+        font-size: 12px;
+    }
+
+    .login-footer {
+        text-align: center;
+        padding: 0 20px 18px;
+        color: #8a96a3;
+        font-size: 10px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="login-box">
+
+    <div class="login-title">
+        <div class="icon">🏠</div>
+
+        <h1>QUẢN LÝ PHÒNG TRỌ</h1>
+
+        <p>Đăng nhập hệ thống quản trị</p>
+    </div>
+
+    <div class="login-form">
+
+        {% if form.errors %}
+            <p class="errornote">
+                Tên đăng nhập hoặc mật khẩu không đúng.
+            </p>
+        {% endif %}
+
+        <form action="{{ app_path }}" method="post" id="login-form">
+            {% csrf_token %}
+
+            <div class="form-row">
+                {{ form.username.errors }}
+                <label for="id_username">Tên đăng nhập:</label>
+                {{ form.username }}
+            </div>
+
+            <div class="form-row">
+                {{ form.password.errors }}
+                <label for="id_password">Mật khẩu:</label>
+                {{ form.password }}
+            </div>
+
+            <input type="hidden" name="next" value="{{ next }}">
+
+            <div class="submit-row">
+                <input type="submit" value="Đăng nhập">
+            </div>
+        </form>
+
+    </div>
+
+    <div class="login-footer">
+        Hệ thống quản lý cho thuê phòng trọ
+    </div>
+
+</div>
+{% endblock %}

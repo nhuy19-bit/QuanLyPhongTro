@@ -19,6 +19,10 @@ class Phong(models.Model):
     mo_ta = models.TextField(blank=True, null=True)
     ngay_tao = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        verbose_name = 'Phòng'
+        verbose_name_plural = 'Phòng'
+
     def __str__(self):
         return self.ten_phong
     
@@ -30,6 +34,10 @@ class NguoiThue(models.Model):
     email = models.EmailField(blank=True, null=True)
     dia_chi = models.CharField(max_length=255, blank=True, null=True)
     ngay_tao = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = 'Người thuê'
+        verbose_name_plural = 'Người thuê'
 
     def __str__(self):
         return self.ho_ten
@@ -63,6 +71,10 @@ class HopDong(models.Model):
     )
     ghi_chu = models.TextField(blank=True, null=True)
     ngay_tao = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = 'Hợp đồng'
+        verbose_name_plural = 'Hợp đồng'
 
     def __str__(self):
         return f'{self.nguoi_thue.ho_ten} - {self.phong.ten_phong}'
@@ -102,6 +114,10 @@ class DienNuoc(models.Model):
     ngay_tao = models.DateTimeField(
         auto_now_add=True
     )
+
+    class Meta:
+        verbose_name = 'Điện nước'
+        verbose_name_plural = 'Điện nước'
 
     def tien_dien(self):
         so_dien = max(
@@ -183,6 +199,10 @@ class ThanhToan(models.Model):
         auto_now_add=True
     )
 
+    class Meta:
+        verbose_name = 'Thanh toán'
+        verbose_name_plural = 'Thanh toán'
+
     def tinh_tong_tien(self):
         return (
             self.tien_phong
@@ -220,5 +240,9 @@ class TaiKhoan(models.Model):
         blank=True
     )
 
+    class Meta:
+        verbose_name = 'Tài khoản'
+        verbose_name_plural = 'Tài khoản'
+        
     def __str__(self):
         return f'{self.user.username} - {self.get_vai_tro_display()}'

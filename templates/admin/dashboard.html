@@ -1,0 +1,346 @@
+{% extends "admin/base_site.html" %}
+
+{% block bodyclass %}dashboard{% endblock %}
+
+{% block nav-breadcrumbs %}
+<nav class="custom-breadcrumb-bar">
+    <div class="custom-breadcrumb-content">
+        <a href="{% url 'admin_dashboard' %}">Home</a>
+        <span>›</span>
+        <span>Tổng quan</span>
+    </div>
+</nav>
+{% endblock %}
+
+{% block content %}
+
+<div class="dashboard-page">
+
+    <div class="dashboard-header">
+        <h1>Tổng quan</h1>
+        <p>Quản lý tổng quan hoạt động nhà trọ</p>
+    </div>
+
+    <!-- TÌNH TRẠNG PHÒNG -->
+    <div class="dashboard-section-title">
+        TÌNH TRẠNG PHÒNG
+    </div>
+
+    <div class="dashboard-grid">
+
+        <div class="dashboard-card">
+            <div class="card-icon">🏠</div>
+            <div>
+                <div class="card-title">Tổng phòng</div>
+                <div class="card-number">{{ tong_phong }}</div>
+            </div>
+        </div>
+
+        <div class="dashboard-card">
+            <div class="card-icon green">🟢</div>
+            <div>
+                <div class="card-title">Phòng trống</div>
+                <div class="card-number">{{ phong_trong }}</div>
+            </div>
+        </div>
+
+        <div class="dashboard-card">
+            <div class="card-icon blue">🔵</div>
+            <div>
+                <div class="card-title">Đang thuê</div>
+                <div class="card-number">{{ phong_dang_thue }}</div>
+            </div>
+        </div>
+
+        <div class="dashboard-card">
+            <div class="card-icon yellow">🟡</div>
+            <div>
+                <div class="card-title">Bảo trì</div>
+                <div class="card-number">{{ phong_bao_tri }}</div>
+            </div>
+        </div>
+
+    </div>
+
+
+    <!-- QUẢN LÝ -->
+    <div class="dashboard-section-title">
+        QUẢN LÝ
+    </div>
+
+    <div class="dashboard-grid">
+
+        <a href="{% url 'admin:quanly_taikhoan_changelist' %}"
+           class="dashboard-card dashboard-link">
+
+            <div class="card-icon">👤</div>
+
+            <div>
+                <div class="card-title">Tài khoản</div>
+                <div class="card-number">{{ tong_tai_khoan }}</div>
+            </div>
+
+        </a>
+
+
+        <a href="{% url 'admin:quanly_nguoithue_changelist' %}"
+           class="dashboard-card dashboard-link">
+
+            <div class="card-icon">👥</div>
+
+            <div>
+                <div class="card-title">Người thuê</div>
+                <div class="card-number">{{ tong_nguoi_thue }}</div>
+            </div>
+
+        </a>
+
+
+        <a href="{% url 'admin:quanly_hopdong_changelist' %}"
+           class="dashboard-card dashboard-link">
+
+            <div class="card-icon">📄</div>
+
+            <div>
+                <div class="card-title">Hợp đồng</div>
+                <div class="card-number">{{ tong_hop_dong }}</div>
+            </div>
+
+        </a>
+
+
+        <a href="{% url 'admin:quanly_diennuoc_changelist' %}"
+           class="dashboard-card dashboard-link">
+
+            <div class="card-icon">💡</div>
+
+            <div>
+                <div class="card-title">Điện nước</div>
+                <div class="card-number">{{ tong_dien_nuoc }}</div>
+            </div>
+
+        </a>
+
+
+        <a href="{% url 'admin:quanly_thanhtoan_changelist' %}"
+           class="dashboard-card dashboard-link">
+
+            <div class="card-icon">💰</div>
+
+            <div>
+                <div class="card-title">Thanh toán</div>
+                <div class="card-number">{{ tong_thanh_toan }}</div>
+            </div>
+
+        </a>
+
+    </div>
+
+</div>
+
+
+<style>
+body.dashboard #header {
+    position: relative !important;
+    height: 58px !important;
+    min-height: 58px !important;
+    margin-bottom: 0 !important;
+    box-sizing: border-box !important;
+    background: #26384a !important;
+}
+
+body.dashboard #header::after {
+    content: "";
+    position: absolute;
+    top: 58px;
+    left: 0;
+    width: 100%;
+    height: 40px !important;
+    background: #417690 !important;
+}
+
+body.dashboard #main {
+    padding-top: 40px !important;
+}
+
+body.dashboard #nav-breadcrumbs {
+    display: none !important;
+}
+
+/* =====================================
+   THANH BREADCRUMB - XANH NHẠT
+   ===================================== */
+
+.custom-breadcrumb-bar {
+    display: block !important;
+    width: 100% !important;
+    height: 40px !important;
+    background: #28566a !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-sizing: border-box;
+}
+
+.custom-breadcrumb-content {
+    display: none;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 0 25px;
+    box-sizing: border-box;
+    font-size: 13px;
+}
+
+.custom-breadcrumb-content a {
+    color: white !important;
+    text-decoration: none !important;
+}
+
+.custom-breadcrumb-content a:hover {
+    color: #20c9a6 !important;
+}
+
+.custom-breadcrumb-content span {
+    color: white !important;
+}
+
+.dashboard-page {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 5px 30px;
+    box-sizing: border-box;
+}
+
+.dashboard-header {
+    margin-bottom: 30px;
+}
+
+.dashboard-header h1 {
+    margin: 0;
+    font-size: 28px;
+    color: #26384a;
+}
+
+.dashboard-header p {
+    margin-top: 8px;
+    color: #7b8794;
+}
+
+
+/* TIÊU ĐỀ */
+
+.dashboard-section-title {
+    margin: 25px 0 12px;
+    color: #7b8794;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+
+/* GRID */
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(180px, 1fr));
+    gap: 18px;
+    width: 100%;
+}
+
+
+/* CARD */
+
+.dashboard-card {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+
+    min-height: 130px;
+
+    padding: 24px;
+
+    background: white;
+
+    border: 1px solid #e4e8ec;
+
+    border-radius: 8px;
+
+    box-shadow:
+        0 2px 6px rgba(0,0,0,0.05);
+
+    width: 100%;
+    box-sizing: border-box;
+}
+
+
+/* LINK CARD */
+
+.dashboard-link {
+    color: inherit !important;
+    text-decoration: none !important;
+
+    transition: 0.2s;
+}
+
+.dashboard-link:hover {
+    transform: translateY(-3px);
+
+    box-shadow:
+        0 5px 14px rgba(0,0,0,0.10);
+}
+
+
+/* ICON */
+
+.card-icon {
+    width: 48px;
+    height: 48px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    background: #eef3f7;
+
+    border-radius: 10px;
+
+    font-size: 22px;
+}
+
+.card-icon.green {
+    background: #e6f7ef;
+}
+
+.card-icon.blue {
+    background: #e7f0ff;
+}
+
+.card-icon.yellow {
+    background: #fff5d9;
+}
+
+
+/* TEXT */
+
+.card-title {
+    color: #718096;
+
+    font-size: 13px;
+
+    margin-bottom: 5px;
+}
+
+.card-number {
+    color: #26384a;
+
+    font-size: 25px;
+
+    font-weight: 700;
+}
+
+</style>
+
+{% endblock %}
