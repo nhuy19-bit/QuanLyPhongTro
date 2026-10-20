@@ -1,0 +1,162 @@
+{% extends "admin/change_list.html" %}
+
+{% block content %}
+<style>
+    .facility-toolbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 20px;
+    }
+
+    .facility-title {
+        color: #263548;
+        font-size: 24px;
+        font-weight: 700;
+    }
+
+    .facility-add,
+    .facility-edit,
+    .facility-delete {
+        display: inline-block;
+        color: white !important;
+        text-decoration: none !important;
+        border-radius: 7px;
+        padding: 8px 13px;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    .facility-add,
+    .facility-edit {
+        background: #159b96;
+    }
+
+    .facility-add:hover,
+    .facility-edit:hover {
+        background: #108580;
+    }
+
+    .facility-delete {
+        background: #dc3545;
+    }
+
+    .facility-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .facility-row {
+        display: grid;
+        grid-template-columns: minmax(180px, 1.2fr) minmax(220px, 2fr) 120px auto;
+        align-items: baseline;
+        gap: 18px;
+        padding: 14px 18px;
+        background: #fff;
+        border: 1px solid #e5ebf1;
+        border-top: 3px solid #159b96;
+        border-radius: 10px;
+        box-shadow: 0 4px 14px rgba(30, 50, 70, 0.05);
+    }
+
+    .facility-row:hover {
+        background: #f8fffe;
+    }
+
+    .facility-name a {
+        color: #108580;
+        font-size: 14px;
+        font-weight: 700;
+        line-height: 20px;
+        text-decoration: none;
+    }
+
+    .facility-name a:hover {
+        color: #159b96;
+    }
+
+    .facility-address {
+        color: #596875;
+        line-height: 20px;
+    }
+
+    .facility-count {
+        color: #344054;
+        font-weight: 600;
+        line-height: 20px;
+    }
+
+    .facility-actions {
+        display: flex;
+        align-self: center;
+        justify-content: flex-end;
+        gap: 8px;
+    }
+
+    #content > h1,
+    .object-tools,
+    #toolbar,
+    .actions,
+    .paginator,
+    #changelist-form {
+        display: none;
+    }
+
+    @media (max-width: 800px) {
+        .facility-row {
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .facility-actions {
+            justify-content: flex-start;
+        }
+    }
+
+    @media (max-width: 520px) {
+        .facility-toolbar,
+        .facility-row {
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .facility-actions {
+            justify-content: flex-start;
+        }
+    }
+</style>
+
+<div class="facility-toolbar">
+    <div class="facility-title">🏢 Cơ sở</div>
+    <a href="{% url 'admin:quanly_coso_add' %}" class="facility-add">+ Thêm cơ sở</a>
+</div>
+
+<div class="facility-list">
+    {% for co_so in cl.result_list %}
+        <div class="facility-row">
+            <div class="facility-name">
+                <a href="{% url 'admin:quanly_coso_change' co_so.pk %}">
+                    {{ co_so.ten_co_so }}
+                </a>
+            </div>
+
+            <div class="facility-address">
+                {{ co_so.dia_chi|default:"Chưa cập nhật địa chỉ" }}
+            </div>
+
+            <div class="facility-count">
+                {{ co_so.phong.count }} phòng
+            </div>
+
+            <div class="facility-actions">
+                <a href="{% url 'admin:quanly_coso_change' co_so.pk %}" class="facility-edit">Sửa</a>
+                <a href="{% url 'admin:quanly_coso_delete' co_so.pk %}" class="facility-delete">Xóa</a>
+            </div>
+        </div>
+    {% empty %}
+        <div class="facility-row">Chưa có cơ sở nào.</div>
+    {% endfor %}
+</div>
+{% endblock %}

@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 from .models import HopDong, DienNuoc, ThanhToan
 from .models import TaiKhoan
-from .models import Phong
+from .models import CoSo, Phong
 from django.shortcuts import get_object_or_404
 
 def home(request):
@@ -195,13 +195,14 @@ def danh_sach_phong(request):
     if not request.user.is_authenticated:
         return redirect('login')
 
-    danh_sach = Phong.objects.all()
+    danh_sach_co_so = CoSo.objects.prefetch_related('phong').all()
 
     return render(
         request,
         'phong_list.html',
         {
-            'danh_sach': danh_sach
+            'danh_sach_co_so': danh_sach_co_so,
+            'phong_chua_co_so': Phong.objects.filter(co_so__isnull=True),
         }
     )
 
@@ -214,11 +215,13 @@ def them_phong(request):
         ten_phong = request.POST.get('ten_phong')
         gia_phong = request.POST.get('gia_phong')
         dien_tich = request.POST.get('dien_tich')
+        co_so_id = request.POST.get('co_so')
         trang_thai = request.POST.get('trang_thai')
         mo_ta = request.POST.get('mo_ta')
 
         Phong.objects.create(
             ten_phong=ten_phong,
+            co_so_id=co_so_id or None,
             gia_phong=gia_phong,
             dien_tich=dien_tich,
             trang_thai=trang_thai,
@@ -229,7 +232,10 @@ def them_phong(request):
 
     return render(
         request,
-        'phong_form.html'
+        'phong_form.html',
+        {
+            'danh_sach_co_so': CoSo.objects.all(),
+        }
     )
 
 
@@ -238,6 +244,7 @@ def sua_phong(request, id):
 
     if request.method == 'POST':
         phong.ten_phong = request.POST.get('ten_phong')
+        phong.co_so_id = request.POST.get('co_so') or None
         phong.gia_phong = request.POST.get('gia_phong')
         phong.dien_tich = request.POST.get('dien_tich')
         phong.trang_thai = request.POST.get('trang_thai')
@@ -251,7 +258,8 @@ def sua_phong(request, id):
         request,
         'phong_form.html',
         {
-            'phong': phong
+            'phong': phong,
+            'danh_sach_co_so': CoSo.objects.all(),
         }
     )
 
@@ -290,6 +298,8 @@ def admin_dashboard(request):
 
         'tong_phong': Phong.objects.count(),
 
+        'tong_co_so': CoSo.objects.count(),
+
         'phong_trong': Phong.objects.filter(
             trang_thai='trong'
         ).count(),
@@ -317,4 +327,42 @@ def admin_dashboard(request):
         request,
         'admin/dashboard.html',
         context
+    )
+
+def phong_cua_toi(request):
+    if not request.user.is_authenticated:
+        return redirect('login')
+
+    try:
+        tai_khoan = request.user.tai_khoan
+    except TaiKhoan.DoesNotExist:
+        return redirect('login')
+
+    if tai_khoan.vai_tro != 'nguoi_thue':
+        return redirect('admin:index')
+
+    from .models import NguoiThue
+
+    try:
+        nguoi_thue = tai_khoan.ho_so_nguoi_thue
+    except NguoiThue.DoesNotExist:
+        return render(
+            request,
+            'phong_cua_toi.html',
+            {'error': 'Tài khoản chưa được liên kết với hồ sơ người thuê.'}
+        )
+
+    hop_dong = HopDong.objects.filter(
+        nguoi_thue=nguoi_thue,
+        trang_thai='hieu_luc'
+    ).select_related('phong').order_by('-ngay_bat_dau').first()
+
+    return render(
+        request,
+        'phong_cua_toi.html',
+        {
+            'nguoi_thue': nguoi_thue,
+            'hop_dong': hop_dong,
+            'phong': hop_dong.phong if hop_dong else None,
+        }
     )

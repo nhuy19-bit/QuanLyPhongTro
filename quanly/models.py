@@ -1,6 +1,21 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+class CoSo(models.Model):
+    ten_co_so = models.CharField(max_length=100, unique=True)
+    dia_chi = models.CharField(max_length=255, blank=True)
+    mo_ta = models.TextField(blank=True)
+    ngay_tao = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = 'Cơ sở'
+        verbose_name_plural = 'Cơ sở'
+        ordering = ('ten_co_so',)
+
+    def __str__(self):
+        return self.ten_co_so
+
+
 class Phong(models.Model):
     TRANG_THAI_CHOICES = [
         ('trong', 'Phòng trống'),
@@ -8,6 +23,13 @@ class Phong(models.Model):
         ('bao_tri', 'Đang bảo trì'),
     ]
 
+    co_so = models.ForeignKey(
+        CoSo,
+        on_delete=models.PROTECT,
+        related_name='phong',
+        null=True,
+        blank=True,
+    )
     ten_phong = models.CharField(max_length=50, unique=True)
     gia_phong = models.DecimalField(max_digits=12, decimal_places=0)
     dien_tich = models.DecimalField(max_digits=6, decimal_places=2)
@@ -235,17 +257,20 @@ class TaiKhoan(models.Model):
     user = models.OneToOneField(
         User,
         on_delete=models.CASCADE,
-        related_name='tai_khoan'
+        related_name='tai_khoan',
+        verbose_name='Người dùng'
     )
 
     vai_tro = models.CharField(
         max_length=20,
-        choices=VAI_TRO_CHOICES
+        choices=VAI_TRO_CHOICES,
+        verbose_name='Vai trò'
     )
 
     so_dien_thoai = models.CharField(
         max_length=15,
-        blank=True
+        blank=True,
+        verbose_name='Số điện thoại'
     )
 
     class Meta:

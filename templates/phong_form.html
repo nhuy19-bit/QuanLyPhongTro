@@ -75,6 +75,31 @@
                         <div class="mb-3">
 
                             <label class="form-label">
+                                Cơ sở
+                            </label>
+
+                            <select
+                                name="co_so"
+                                class="form-select"
+                                required
+                            >
+                                <option value="">-- Chọn cơ sở --</option>
+                                {% for co_so in danh_sach_co_so %}
+                                    <option
+                                        value="{{ co_so.id }}"
+                                        {% if phong.co_so_id == co_so.id %}selected{% endif %}
+                                    >
+                                        {{ co_so.ten_co_so }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+
+                        </div>
+
+
+                        <div class="mb-3">
+
+                            <label class="form-label">
                                 Giá phòng
                             </label>
 

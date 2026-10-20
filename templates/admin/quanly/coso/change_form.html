@@ -1,0 +1,137 @@
+{% extends "admin/change_form.html" %}
+
+{% block extrastyle %}
+    {{ block.super }}
+    <style>
+        :root {
+            --primary: #159b96;
+            --primary-dark: #108580;
+            --primary-light: #e8fbf9;
+            --border: #e5ebf1;
+            --text: #263548;
+            --muted: #8491a3;
+        }
+
+        body {
+            background: #f4f7fb;
+            color: var(--text);
+        }
+
+        .custom-sidebar {
+            display: block !important;
+            visibility: visible !important;
+        }
+
+        #main {
+            margin-left: 240px !important;
+            width: calc(100% - 240px) !important;
+        }
+
+        #header {
+            height: 68px !important;
+            min-height: 68px !important;
+            margin-left: 240px !important;
+            width: calc(100% - 240px) !important;
+            padding: 0 20px !important;
+            box-sizing: border-box !important;
+            background: linear-gradient(135deg, #0f172a 0%, #1d4ed8 100%) !important;
+            box-shadow: 0 8px 20px rgba(15, 23, 42, 0.12) !important;
+        }
+
+        #user-tools {
+            position: absolute !important;
+            right: 20px !important;
+            top: 0 !important;
+            height: 68px !important;
+            display: flex !important;
+            align-items: center !important;
+            gap: 10px !important;
+            color: white !important;
+        }
+
+        #user-tools a,
+        #user-tools a:link,
+        #user-tools a:visited {
+            color: rgba(255, 255, 255, 0.95) !important;
+            text-decoration: none !important;
+        }
+
+        #content-main {
+            width: 100%;
+        }
+
+        .inline-group {
+            overflow: hidden;
+            margin-bottom: 24px;
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            box-shadow: 0 5px 20px rgba(30, 50, 70, 0.05);
+        }
+
+        .inline-group h2 {
+            margin: 0;
+            padding: 16px 20px;
+            background: var(--primary-light);
+            color: var(--primary-dark);
+            border-bottom: 1px solid var(--border);
+            font-size: 17px;
+            font-weight: 700;
+        }
+
+        .inline-group .tabular tr,
+        .inline-group .tabular tbody tr {
+            background: #fff;
+        }
+
+        .inline-group .tabular thead th {
+            padding: 12px 14px;
+            background: #f3fbfa;
+            color: var(--text);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .inline-group .tabular td {
+            padding: 12px 14px;
+            border-bottom: 1px solid #edf0f4;
+            vertical-align: middle;
+        }
+
+        .inline-group .tabular tbody tr:hover {
+            background: #f8fffe;
+        }
+
+        .inline-group input,
+        .inline-group select {
+            min-height: 38px;
+            border: 1px solid #d8e1e9;
+            border-radius: 8px;
+            padding: 8px 10px;
+            box-sizing: border-box;
+        }
+
+        .inline-group input:focus,
+        .inline-group select:focus {
+            border-color: #35c9c3;
+            outline: 2px solid rgba(53, 201, 195, 0.15);
+        }
+
+        .inline-group .add-row a {
+            color: var(--primary-dark);
+            font-weight: 600;
+        }
+
+        .inline-group .add-row a:hover {
+            color: var(--primary);
+        }
+
+        .submit-row input[name="_save"] {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .submit-row input[name="_save"]:hover {
+            background: var(--primary-dark);
+        }
+    </style>
+{% endblock %}

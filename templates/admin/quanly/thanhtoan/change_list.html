@@ -15,7 +15,7 @@
 
     .payment-toolbar h1 {
         margin-bottom: 5px;
-        color: #52708f;
+        color: #108580;
     }
 
 
@@ -57,7 +57,7 @@
     .payment-name {
         font-size: 19px;
         font-weight: 700;
-        color: #52708f;
+        color: #108580;
         margin-bottom: 12px;
     }
 
@@ -77,7 +77,7 @@
 
     .status-paid {
         background: #d1f7e9;
-        color: #417690;
+        color: #108580;
     }
 
     .status-unpaid {
@@ -138,11 +138,11 @@
     }
 
     .btn-edit {
-        background: #417690;
+        background: #159b96;
     }
 
     .btn-edit:hover {
-        background: #417690;
+        background: #108580;
     }
 
     .btn-delete {
@@ -160,7 +160,7 @@
 
     .btn-add-payment {
         display: inline-block;
-        background: #417690 !important;
+        background: #159b96 !important;
         color: white !important;
         border-radius: 5px;
         padding: 10px 16px;
@@ -170,7 +170,7 @@
     }
 
     .btn-add-payment:hover {
-        background: #417690 !important;
+        background: #108580 !important;
     }
 
 
@@ -196,6 +196,39 @@
 
     .paginator {
         display: none;
+    }
+
+    .payment-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .payment-card {
+        display: grid;
+        grid-template-columns: minmax(150px, 1.2fr) repeat(4, minmax(130px, 1fr)) auto;
+        align-items: center;
+        gap: 12px;
+        min-height: 0;
+        padding: 12px 16px;
+        border-top: 3px solid #159b96;
+    }
+
+    .payment-card > * {
+        margin-top: 0;
+        margin-bottom: 0;
+    }
+
+    @media (max-width: 1000px) {
+        .payment-card {
+            grid-template-columns: repeat(3, minmax(150px, 1fr));
+        }
+    }
+
+    @media (max-width: 700px) {
+        .payment-card {
+            grid-template-columns: 1fr;
+        }
     }
 
 </style>
@@ -318,4 +351,12 @@
 
 </div>
 
+<style>
+    .payment-grid { display: none !important; }
+    #changelist-form { display: block !important; }
+    #changelist-form table { width: 100%; background: #fff; border-collapse: collapse; }
+    #changelist-form thead th { background: #e8fbf9; color: #108580; padding: 14px; }
+    #changelist-form tbody td { padding: 14px; border-top: 1px solid #edf0f4; }
+    #changelist-form tbody tr:hover { background: #f8fffe; }
+</style>
 {% endblock %}

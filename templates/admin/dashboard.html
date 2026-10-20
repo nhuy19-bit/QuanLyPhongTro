@@ -70,6 +70,18 @@
 
     <div class="dashboard-grid">
 
+        <a href="{% url 'admin:quanly_coso_changelist' %}"
+           class="dashboard-card dashboard-link">
+
+            <div class="card-icon">🏢</div>
+
+            <div>
+                <div class="card-title">Cơ sở</div>
+                <div class="card-number">{{ tong_co_so }}</div>
+            </div>
+
+        </a>
+
         <a href="{% url 'admin:quanly_taikhoan_changelist' %}"
            class="dashboard-card dashboard-link">
 
@@ -142,47 +154,43 @@
 <style>
 body.dashboard #header {
     position: relative !important;
-    height: 58px !important;
-    min-height: 58px !important;
+    height: 68px !important;
+    min-height: 68px !important;
     margin-bottom: 0 !important;
     box-sizing: border-box !important;
-    background: #26384a !important;
+    background: linear-gradient(135deg, #0f172a 0%, #1d4ed8 100%) !important;
 }
 
 body.dashboard #header::after {
     content: "";
     position: absolute;
-    top: 58px;
+    top: 68px;
     left: 0;
     width: 100%;
-    height: 40px !important;
-    background: #417690 !important;
+    height: 36px !important;
+    background: linear-gradient(180deg, rgba(30, 41, 59, 0.08), rgba(148, 163, 184, 0.06));
 }
 
 body.dashboard #main {
-    padding-top: 40px !important;
+    padding-top: 30px !important;
 }
 
 body.dashboard #nav-breadcrumbs {
     display: none !important;
 }
 
-/* =====================================
-   THANH BREADCRUMB - XANH NHẠT
-   ===================================== */
-
 .custom-breadcrumb-bar {
     display: block !important;
     width: 100% !important;
     height: 40px !important;
-    background: #28566a !important;
+    background: linear-gradient(90deg, #0f172a, #1d4ed8) !important;
     margin: 0 !important;
     padding: 0 !important;
     box-sizing: border-box;
+    box-shadow: 0 6px 16px rgba(15, 23, 42, 0.08);
 }
 
 .custom-breadcrumb-content {
-    display: none;
     height: 40px;
     display: flex;
     align-items: center;
@@ -198,7 +206,7 @@ body.dashboard #nav-breadcrumbs {
 }
 
 .custom-breadcrumb-content a:hover {
-    color: #20c9a6 !important;
+    color: #bfdbfe !important;
 }
 
 .custom-breadcrumb-content span {
@@ -214,33 +222,31 @@ body.dashboard #nav-breadcrumbs {
 }
 
 .dashboard-header {
-    margin-bottom: 30px;
+    margin-bottom: 24px;
 }
 
 .dashboard-header h1 {
     margin: 0;
-    font-size: 28px;
-    color: #26384a;
+    font-size: 30px;
+    line-height: 1.2;
+    color: #0f172a;
+    font-weight: 700;
 }
 
 .dashboard-header p {
     margin-top: 8px;
-    color: #7b8794;
+    color: #64748b;
+    font-size: 15px;
 }
-
-
-/* TIÊU ĐỀ */
 
 .dashboard-section-title {
-    margin: 25px 0 12px;
-    color: #7b8794;
+    margin: 26px 0 14px;
+    color: #64748b;
     font-size: 12px;
     font-weight: 700;
-    letter-spacing: 1px;
+    letter-spacing: 1.3px;
+    text-transform: uppercase;
 }
-
-
-/* GRID */
 
 .dashboard-grid {
     display: grid;
@@ -249,98 +255,80 @@ body.dashboard #nav-breadcrumbs {
     width: 100%;
 }
 
-
-/* CARD */
-
 .dashboard-card {
     display: flex;
     align-items: center;
     gap: 15px;
-
-    min-height: 130px;
-
-    padding: 24px;
-
-    background: white;
-
-    border: 1px solid #e4e8ec;
-
-    border-radius: 8px;
-
-    box-shadow:
-        0 2px 6px rgba(0,0,0,0.05);
-
+    min-height: 140px;
+    padding: 22px 20px;
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+    border: 1px solid rgba(148, 163, 184, 0.18);
+    border-radius: 16px;
+    box-shadow: 0 8px 18px rgba(15, 23, 42, 0.05);
     width: 100%;
     box-sizing: border-box;
 }
 
-
-/* LINK CARD */
-
 .dashboard-link {
     color: inherit !important;
     text-decoration: none !important;
-
-    transition: 0.2s;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .dashboard-link:hover {
-    transform: translateY(-3px);
-
-    box-shadow:
-        0 5px 14px rgba(0,0,0,0.10);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(30, 41, 59, 0.1);
 }
 
-
-/* ICON */
-
 .card-icon {
-    width: 48px;
-    height: 48px;
-
+    width: 52px;
+    height: 52px;
     display: flex;
-
     align-items: center;
     justify-content: center;
-
-    background: #eef3f7;
-
-    border-radius: 10px;
-
+    background: linear-gradient(135deg, #dbeafe, #eff6ff);
+    border-radius: 12px;
     font-size: 22px;
+    flex-shrink: 0;
 }
 
 .card-icon.green {
-    background: #e6f7ef;
+    background: linear-gradient(135deg, #dcfce7, #f0fdf4);
 }
 
 .card-icon.blue {
-    background: #e7f0ff;
+    background: linear-gradient(135deg, #dbeafe, #eff6ff);
 }
 
 .card-icon.yellow {
-    background: #fff5d9;
+    background: linear-gradient(135deg, #fef3c7, #fffbeb);
 }
 
-
-/* TEXT */
-
 .card-title {
-    color: #718096;
-
+    color: #64748b;
     font-size: 13px;
-
     margin-bottom: 5px;
+    font-weight: 600;
 }
 
 .card-number {
-    color: #26384a;
-
-    font-size: 25px;
-
+    color: #0f172a;
+    font-size: 26px;
     font-weight: 700;
+    line-height: 1.2;
 }
 
+@media (max-width: 1100px) {
+    .dashboard-grid {
+        grid-template-columns: repeat(2, minmax(180px, 1fr));
+    }
+}
+
+@media (max-width: 720px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+}
 </style>
 
 {% endblock %}

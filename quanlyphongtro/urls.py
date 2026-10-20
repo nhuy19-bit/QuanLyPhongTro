@@ -24,6 +24,7 @@ from quanly.views import (
     dang_xuat,
     dashboard,
     admin_dashboard,
+    phong_cua_toi,
 )
 
 
@@ -53,6 +54,12 @@ urlpatterns = [
         'phong/xoa/<int:id>/',
         views.xoa_phong,
         name='xoa_phong'
+    ),
+
+    path(
+    'phong-cua-toi/',
+    views.phong_cua_toi,
+    name='phong_cua_toi'
     ),
 
     path('', home, name='home'),

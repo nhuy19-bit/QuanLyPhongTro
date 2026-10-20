@@ -17,7 +17,7 @@
     }
 
     .add-btn {
-        background: #417690;
+        background: #159b96;
         color: white !important;
         padding: 10px 16px;
         border-radius: 5px;
@@ -26,7 +26,7 @@
     }
 
     .add-btn:hover {
-        background: #315d73;
+        background: #108580;
     }
 
     .tenant-grid {
@@ -44,6 +44,52 @@
         transition: 0.2s;
     }
 
+    .tenant-table-wrap {
+        overflow-x: auto;
+        background: #fff;
+        border: 1px solid #e5ebf1;
+        border-radius: 12px;
+        box-shadow: 0 5px 20px rgba(30, 50, 70, 0.05);
+    }
+
+    .tenant-table {
+        width: 100%;
+        min-width: 1050px;
+        border-collapse: collapse;
+    }
+
+    .tenant-table th {
+        padding: 14px 16px;
+        background: #e8fbf9;
+        color: #108580;
+        font-size: 12px;
+        text-align: left;
+        white-space: nowrap;
+    }
+
+    .tenant-table td {
+        padding: 14px 16px;
+        color: #596875;
+        border-top: 1px solid #edf0f4;
+        vertical-align: middle;
+    }
+
+    .tenant-table tbody tr:hover {
+        background: #f8fffe;
+    }
+
+    .tenant-table .tenant-name {
+        color: #108580;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .tenant-table .tenant-actions {
+        display: flex;
+        gap: 8px;
+        white-space: nowrap;
+    }
+
     .tenant-card:hover {
         transform: translateY(-2px);
         box-shadow: 0 4px 12px rgba(0,0,0,0.10);
@@ -52,7 +98,7 @@
     .tenant-name {
         font-size: 18px;
         font-weight: 600;
-        color: #29445b;
+        color: #108580;
         margin-bottom: 14px;
     }
 
@@ -81,7 +127,7 @@
     }
 
     .edit-btn {
-        background: #417690;
+        background: #159b96;
         color: white !important;
     }
 
@@ -111,88 +157,111 @@
         display: none;
     }
 
+    .tenant-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .tenant-card {
+        display: grid;
+        grid-template-columns: minmax(170px, 1fr) minmax(420px, 3fr) auto;
+        align-items: center;
+        gap: 20px;
+        min-height: 0;
+        padding: 14px 18px;
+        border-top: 3px solid #159b96;
+    }
+
+    .tenant-name,
+    .tenant-info,
+    .tenant-actions {
+        margin: 0;
+    }
+
+    .tenant-info {
+        display: grid;
+        grid-template-columns: repeat(6, minmax(120px, 1fr));
+        gap: 10px;
+    }
+
+    @media (max-width: 900px) {
+        .tenant-card {
+            grid-template-columns: 1fr;
+            gap: 10px;
+        }
+
+        .tenant-info {
+            grid-template-columns: repeat(2, minmax(120px, 1fr));
+        }
+    }
     #changelist-form {
         display: none;
     }
 </style>
-
-
 <div class="tenant-header">
-
-    <div class="tenant-title">
-        👥 Người thuê
-    </div>
-
+    <div class="tenant-title">👥 Người thuê</div>
     <a href="{% url 'admin:quanly_nguoithue_add' %}" class="add-btn">
         + Thêm người thuê
     </a>
-
 </div>
 
-
-<div class="tenant-grid">
-
-    {% for object in cl.result_list %}
-
-    <div class="tenant-card">
-
-        <div class="tenant-name">
-            {{ object.ho_ten }}
-        </div>
-
-        <div class="tenant-info">
-
-            <div>
-                <strong>CCCD:</strong>
-                {{ object.so_cccd }}
-            </div>
-
-            <div>
-                <strong>SĐT:</strong>
-                {{ object.so_dien_thoai }}
-            </div>
-
-            <div>
-                <strong>Email:</strong>
-                {{ object.email|default:"Chưa cập nhật" }}
-            </div>
-
-            <div>
-                <strong>Địa chỉ:</strong>
-                {{ object.dia_chi|default:"Chưa cập nhật" }}
-            </div>
-
-        </div>
-
-
-        <div class="tenant-actions">
-
-            <a
-                href="{% url 'admin:quanly_nguoithue_change' object.pk %}"
-                class="edit-btn"
-            >
-                ✏ Sửa
-            </a>
-
-            <a
-                href="{% url 'admin:quanly_nguoithue_delete' object.pk %}"
-                class="delete-btn"
-            >
-                🗑 Xóa
-            </a>
-
-        </div>
-
-    </div>
-
-    {% empty %}
-
-    <div>
-        Chưa có người thuê nào.
-    </div>
-
-    {% endfor %}
-
+<div class="tenant-table-wrap">
+    <table class="tenant-table">
+        <thead>
+            <tr>
+                <th>Họ tên</th>
+                <th>CCCD</th>
+                <th>Số điện thoại</th>
+                <th>Email</th>
+                <th>Phòng</th>
+                <th>Địa chỉ cơ sở</th>
+                <th>Thao tác</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for object in cl.result_list %}
+                <tr>
+                    <td class="tenant-name">{{ object.ho_ten }}</td>
+                    <td>{{ object.so_cccd }}</td>
+                    <td>{{ object.so_dien_thoai }}</td>
+                    <td>{{ object.email|default:"Chưa cập nhật" }}</td>
+                    <td>
+                        {% for hop_dong in object.hop_dong.all %}
+                            {% if hop_dong.trang_thai == "hieu_luc" %}
+                                {{ hop_dong.phong.ten_phong }}
+                            {% endif %}
+                        {% empty %}
+                            Chưa thuê phòng
+                        {% endfor %}
+                    </td>
+                    <td>
+                        {% for hop_dong in object.hop_dong.all %}
+                            {% if hop_dong.trang_thai == "hieu_luc" %}
+                                {% if hop_dong.phong.co_so %}
+                                    {{ hop_dong.phong.co_so.dia_chi|default:"Chưa cập nhật" }}
+                                {% else %}
+                                    Chưa gán cơ sở
+                                {% endif %}
+                            {% endif %}
+                        {% empty %}
+                            Chưa thuê phòng
+                        {% endfor %}
+                    </td>
+                    <td>
+                        <div class="tenant-actions">
+                            <a href="{% url 'admin:quanly_nguoithue_change' object.pk %}" class="edit-btn">Sửa</a>
+                            <a href="{% url 'admin:quanly_nguoithue_delete' object.pk %}" class="delete-btn">Xóa</a>
+                        </div>
+                    </td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="7">Chưa có người thuê nào.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </div>
 
 {% endblock %}

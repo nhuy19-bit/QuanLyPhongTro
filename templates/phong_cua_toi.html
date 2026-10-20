@@ -1,0 +1,94 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Phòng của tôi - Quản lý phòng trọ</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --navy: #0f172a;
+            --blue: #1d4ed8;
+            --blue-soft: #eff6ff;
+            --ink: #0f172a;
+            --muted: #64748b;
+            --line: rgba(148, 163, 184, 0.18);
+            --paper: #ffffff;
+            --canvas: #f8fafc;
+            --green: #25866d;
+            --green-soft: #e8f7f1;
+        }
+        * { box-sizing: border-box; }
+        body { margin: 0; background: var(--canvas); color: var(--ink); font-family: 'Manrope', sans-serif; }
+        .topbar { background: linear-gradient(135deg, #0f172a 0%, #1d4ed8 100%); box-shadow: 0 8px 20px rgba(15, 23, 42, 0.12); }
+        .topbar-inner, .page { width: min(1160px, calc(100% - 48px)); margin: 0 auto; }
+        .topbar-inner { min-height: 76px; display: flex; align-items: center; justify-content: space-between; }
+        .brand { color: white; font-size: 18px; font-weight: 800; text-decoration: none; }
+        .brand span { color: #bfdbfe; font-size: 23px; margin-right: 7px; }
+        .back { color: #d6e1ee; font-size: 13px; font-weight: 700; text-decoration: none; }
+        .back:hover { color: white; }
+        .page { padding: 46px 0 64px; }
+        .eyebrow { color: var(--blue); font-size: 11px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; }
+        h1 { margin: 8px 0 32px; font-size: 34px; line-height: 1.2; font-weight: 800; letter-spacing: -0.03em; }
+        .room-card { background: var(--paper); border: 1px solid var(--line); border-radius: 14px; box-shadow: 0 10px 28px rgba(28, 53, 84, 0.07); }
+        .room-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; padding: 30px; border-bottom: 1px solid var(--line); }
+        .room-name { margin: 7px 0 0; color: var(--navy); font-size: 29px; font-weight: 800; }
+        .status { display: inline-flex; align-items: center; gap: 7px; padding: 8px 11px; border-radius: 8px; background: var(--green-soft); color: var(--green); font-size: 11px; font-weight: 800; white-space: nowrap; }
+        .status::before { width: 7px; height: 7px; border-radius: 50%; background: currentColor; content: ''; }
+        .room-content { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0; padding: 8px 30px; }
+        .detail { padding: 20px 0; border-bottom: 1px solid var(--line); }
+        .detail:nth-last-child(-n+2) { border-bottom: 0; }
+        .detail-label { display: block; margin-bottom: 7px; color: var(--muted); font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+        .detail-value { font-weight: 700; }
+        .notice { padding: 24px 28px; border: 1px solid #bfdbfe; border-radius: 12px; background: var(--blue-soft); color: #1e40af; line-height: 1.6; }
+        @media (max-width: 650px) {
+            .topbar-inner, .page { width: min(100% - 28px, 560px); }
+            .topbar-inner { min-height: 68px; }
+            .page { padding-top: 42px; }
+            .room-top { padding: 23px 20px; }
+            .room-content { grid-template-columns: 1fr; padding: 8px 20px; }
+            .detail:nth-last-child(-n+2) { border-bottom: 1px solid var(--line); }
+            .detail:last-child { border-bottom: 0; }
+        }
+    </style>
+</head>
+<body>
+<header class="topbar">
+    <div class="topbar-inner">
+        <a class="brand" href="{% url 'dashboard' %}"><span>⌂</span> Quản lý phòng trọ</a>
+        <a class="back" href="{% url 'dashboard' %}">← Về tổng quan</a>
+    </div>
+</header>
+
+<main class="page">
+    <div class="eyebrow">Thông tin lưu trú</div>
+    <h1>Phòng của tôi</h1>
+
+    {% if error %}
+        <div class="notice">{{ error }}</div>
+    {% elif phong and hop_dong %}
+        <section class="room-card">
+            <div class="room-top">
+                <div><div class="eyebrow">Căn phòng hiện tại</div><h2 class="room-name">{{ phong.ten_phong }}</h2></div>
+                <span class="status">Đang hiệu lực</span>
+            </div>
+            <div class="room-content">
+                <div class="detail"><span class="detail-label">Người thuê</span><span class="detail-value">{{ nguoi_thue.ho_ten }}</span></div>
+                <div class="detail"><span class="detail-label">Diện tích</span><span class="detail-value">{{ phong.dien_tich }} m²</span></div>
+                <div class="detail"><span class="detail-label">Giá thuê</span><span class="detail-value">{{ phong.gia_phong|floatformat:0 }} VNĐ/tháng</span></div>
+                <div class="detail"><span class="detail-label">Tiền cọc</span><span class="detail-value">{{ hop_dong.tien_coc|floatformat:0 }} VNĐ</span></div>
+                <div class="detail"><span class="detail-label">Ngày bắt đầu</span><span class="detail-value">{{ hop_dong.ngay_bat_dau|date:"d/m/Y" }}</span></div>
+                <div class="detail"><span class="detail-label">Ngày kết thúc</span><span class="detail-value">{% if hop_dong.ngay_ket_thuc %}{{ hop_dong.ngay_ket_thuc|date:"d/m/Y" }}{% else %}Chưa xác định{% endif %}</span></div>
+            </div>
+        </section>
+    {% else %}
+        <div class="notice">
+            Bạn hiện chưa có hợp đồng thuê phòng đang hiệu lực.
+        </div>
+    {% endif %}
+</main>
+</body>
+</html>

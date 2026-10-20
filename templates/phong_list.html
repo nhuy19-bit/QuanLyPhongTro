@@ -50,7 +50,16 @@
 
                 <tbody>
 
-                {% for phong in danh_sach %}
+                {% for co_so in danh_sach_co_so %}
+
+                    <tr class="table-primary">
+                        <th colspan="6">
+                            {{ co_so.ten_co_so }}
+                            {% if co_so.dia_chi %} - {{ co_so.dia_chi }}{% endif %}
+                        </th>
+                    </tr>
+
+                    {% for phong in co_so.phong.all %}
 
                     <tr>
 
@@ -90,15 +99,36 @@
 
                     </tr>
 
-                {% empty %}
+                    {% empty %}
 
                     <tr>
                         <td colspan="6"
                             class="text-center">
-                            Chưa có phòng nào
+                            Cơ sở chưa có phòng
                         </td>
                     </tr>
 
+                    {% endfor %}
+
+                {% endfor %}
+
+                {% for phong in phong_chua_co_so %}
+                    {% if forloop.first %}
+                    <tr class="table-warning">
+                        <th colspan="6">Phòng chưa gán cơ sở</th>
+                    </tr>
+                    {% endif %}
+                    <tr>
+                        <td>{{ phong.ten_phong }}</td>
+                        <td>{{ phong.gia_phong }} VNĐ</td>
+                        <td>{{ phong.dien_tich }} m²</td>
+                        <td>{{ phong.get_trang_thai_display }}</td>
+                        <td>{{ phong.mo_ta|default:"Chưa có mô tả" }}</td>
+                        <td>
+                            <a href="{% url 'sua_phong' phong.id %}" class="btn btn-warning btn-sm">Sửa</a>
+                            <a href="{% url 'xoa_phong' phong.id %}" class="btn btn-danger btn-sm">Xóa</a>
+                        </td>
+                    </tr>
                 {% endfor %}
 
                 </tbody>

@@ -1,0 +1,165 @@
+{% extends "admin/base_site.html" %}
+{% load admin_list admin_urls %}
+
+{% block content %}
+<style>
+    .shared-list-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .shared-list-title {
+        color: #108580;
+        font-size: 24px;
+        font-weight: 700;
+    }
+
+    .shared-add-button {
+        display: inline-block;
+        padding: 10px 16px;
+        border-radius: 7px;
+        background: #159b96;
+        color: #fff !important;
+        font-size: 13px;
+        font-weight: 600;
+        text-decoration: none !important;
+    }
+
+    .shared-add-button:hover {
+        background: #108580;
+    }
+
+    .shared-tools {
+        margin-bottom: 14px;
+    }
+
+    .shared-search,
+    .shared-actions {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        min-height: 42px;
+        padding: 8px 10px;
+        background: #fff;
+        border: 1px solid #e5ebf1;
+        border-radius: 8px;
+    }
+
+    .shared-actions {
+        margin-top: 8px;
+    }
+
+    .shared-search input[type="text"],
+    .shared-search input[type="submit"],
+    .shared-actions select,
+    .shared-actions button {
+        min-height: 32px;
+        padding: 5px 10px;
+        border: 1px solid #d8e1e9;
+        border-radius: 6px;
+    }
+
+    .shared-search input[type="submit"],
+    .shared-actions button {
+        background: #159b96;
+        color: #fff;
+        border-color: #159b96;
+        cursor: pointer;
+    }
+
+    .shared-table {
+        display: block !important;
+        overflow-x: auto;
+        background: #fff;
+        border: 1px solid #e5ebf1;
+        border-radius: 12px;
+        box-shadow: 0 5px 20px rgba(30, 50, 70, 0.05);
+    }
+
+    .shared-table #result_list {
+        width: 100%;
+        min-width: 850px;
+        margin: 0;
+        border-collapse: collapse;
+        table-layout: fixed;
+        background: #fff;
+    }
+
+    .shared-table #result_list th,
+    .shared-table #result_list td {
+        box-sizing: border-box;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .shared-table #result_list .action-checkbox-column {
+        width: 46px;
+    }
+
+    .shared-table #result_list th:not(.action-checkbox-column),
+    .shared-table #result_list td:not(.action-checkbox-column) {
+        width: auto;
+    }
+
+    .shared-table #result_list thead th {
+        padding: 14px 16px;
+        background: #e8fbf9;
+        color: #108580;
+        font-size: 12px;
+        text-align: left;
+        white-space: nowrap;
+    }
+
+    .shared-table #result_list tbody td {
+        padding: 14px 16px;
+        color: #596875;
+        border-top: 1px solid #edf0f4;
+        vertical-align: middle;
+    }
+
+    .shared-table #result_list tbody tr:hover {
+        background: #f8fffe;
+    }
+
+    .shared-table #result_list tbody th a,
+    .shared-table #result_list tbody td a {
+        color: #108580;
+        font-weight: 600;
+        text-decoration: none !important;
+    }
+
+    .paginator {
+        padding: 14px 0;
+    }
+</style>
+
+<div class="shared-list-header">
+    <div class="shared-list-title">
+        {{ cl.opts.verbose_name_plural|capfirst }}
+    </div>
+    <a href="{% url cl.opts|admin_urlname:'add' %}" class="shared-add-button">
+        + Thêm {{ cl.opts.verbose_name }}
+    </a>
+</div>
+
+<div class="shared-tools">
+    <div class="shared-search">
+        {% search_form cl %}
+    </div>
+
+    <form id="changelist-form" method="post">
+        {% csrf_token %}
+        {% if action_form and actions_on_top and cl.show_admin_actions %}
+            <div class="shared-actions">
+                {% admin_actions %}
+            </div>
+        {% endif %}
+
+        <div class="shared-table">
+            {% result_list cl %}
+        </div>
+    </form>
+</div>
+{% endblock %}
