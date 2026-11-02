@@ -1,4 +1,4 @@
-```html
+
 {% extends "admin/change_form.html" %}
 
 {% block extrastyle %}
@@ -217,6 +217,38 @@
             display: none !important;
         }
 
+        body.change-form #content-main fieldset.aligned {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(180px, 1fr));
+            align-items: start;
+        }
+
+        body.change-form #content-main fieldset.aligned .form-row {
+            display: block;
+            min-width: 0;
+        }
+
+        body.change-form #content-main fieldset.aligned .form-row > label {
+            display: block;
+            width: auto;
+            margin: 0 0 8px;
+        }
+
+        body.change-form #content-main fieldset.aligned .form-row > div {
+            min-width: 0;
+        }
+
+        body.change-form #content-main fieldset.aligned .form-row > div > input,
+        body.change-form #content-main fieldset.aligned .form-row > div > select,
+        body.change-form #content-main fieldset.aligned .form-row > div > textarea {
+            width: 100%;
+            max-width: 100%;
+        }
+
+        body.change-form #content-main fieldset.aligned .form-row:last-child {
+            grid-column: 1 / -1;
+        }
+
         @media (max-width: 768px) {
             #content {
                 padding: 15px;
@@ -229,8 +261,11 @@
             .form-row {
                 padding: 14px;
             }
+
+            body.change-form #content-main fieldset.aligned {
+                display: block;
+            }
         }
         
     </style>
 {% endblock %}
-```

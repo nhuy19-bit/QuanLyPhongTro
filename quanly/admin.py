@@ -30,18 +30,37 @@ class PhongInline(admin.TabularInline):
     )
 
 
+
+
 @admin.register(CoSo)
 class CoSoAdmin(admin.ModelAdmin):
     change_list_template = 'admin/quanly/change_list.html'
     change_form_template = 'admin/quanly/coso/change_form.html'
+
+    # Ẩn trường mô tả khi thêm và sửa cơ sở
+    exclude = ('mo_ta',)
+
     list_display = (
-        'ten_co_so',
+        'ten_co_so_link',
         'dia_chi',
         'so_phong',
         'ngay_tao_hien_thi',
     )
+
     search_fields = ('ten_co_so', 'dia_chi')
     ordering = ('ten_co_so',)
+
+    @admin.display(description='Tên cơ sở', ordering='ten_co_so')
+    def ten_co_so_link(self, obj):
+        from django.utils.html import format_html
+        from django.urls import reverse
+
+        url = (
+            reverse('admin:quanly_phong_changelist')
+            + f'?co_so__id__exact={obj.pk}'
+        )
+
+        return format_html('<a href="{}">{}</a>', url, obj.ten_co_so)
 
     @admin.display(description='Số phòng')
     def so_phong(self, obj):
@@ -52,55 +71,79 @@ class CoSoAdmin(admin.ModelAdmin):
         return obj.ngay_tao.strftime('%d/%m/%Y %H:%M')
 
 
+
 @admin.register(Phong)
 class PhongAdmin(admin.ModelAdmin):
+    class Media:
+        css = {
+            'all': ('admin/quanly/phong/inline-forms.css',)
+        }
+    class DienNuocInline(admin.StackedInline):
+        model = DienNuoc
+        extra = 0
+        template = 'admin/quanly/diennuoc/stacked.html'
+        show_change_link = True
+
+        class Media:
+            css = {
+                'all': ('admin/quanly/diennuoc/inline.css',)
+            }
+
+        fields = (
+            'thang',
+            'chi_so_dien_cu',
+            'chi_so_dien_moi',
+            'chi_so_nuoc_cu',
+            'chi_so_nuoc_moi',
+            'don_gia_dien',
+            'don_gia_nuoc',
+        )
+
+    class ThanhToanInline(admin.StackedInline):
+        model = ThanhToan
+        extra = 0
+        template = 'admin/quanly/thanhtoan/stacked.html'
+        show_change_link = True
+        fields = (
+            'thang',
+            'tien_phong',
+            'tien_dien',
+            'tien_nuoc',
+            'tien_khac',
+            'tong_tien',
+            'trang_thai',
+        )
+        readonly_fields = ('tong_tien',)
+
+    class HopDongInline(admin.StackedInline):
+        model = HopDong
+        extra = 0
+        template = 'admin/quanly/hopdong/stacked.html'
+        show_change_link = True
+        fields = (
+            'nguoi_thue',
+            'ngay_bat_dau',
+            'ngay_ket_thuc',
+            'tien_coc',
+            'trang_thai',
+        )
+
+    # Hiển thị các mục liên quan khi mở chi tiết phòng
+    inlines = [DienNuocInline, ThanhToanInline, HopDongInline]
+
     change_list_template = 'admin/quanly/change_list.html'
 
     list_display = (
         'co_so',
         'ten_phong',
-        'gia_phong',
-        'dien_tich',
-        'hien_thi_trang_thai',
-        'mo_ta',
-        'ngay_tao',
-    )
-
-    list_filter = (
-        'co_so',
-        'trang_thai',
-    )
-
-    search_fields = (
-        'co_so__ten_co_so',
-        'ten_phong',
-        'mo_ta',
-    )
-
-    ordering = (
-        'ten_phong',
-    )
-
-    @admin.display(
-        description='Trạng thái',
-        ordering='trang_thai'
-    )
-    def hien_thi_trang_thai(self, obj):
-        return obj.get_trang_thai_display()
-    list_display = (
-        'co_so',
-        'ten_phong',
         'gia_phong_hien_thi',
         'dien_tich',
-        'trang_thai',
+        'hien_thi_trang_thai',
         'mo_ta_hien_thi',
-        ngay_tao_hien_thi,
+        'ngay_tao_hien_thi',
     )
 
-    list_filter = (
-        'co_so',
-        'trang_thai',
-    )
+    list_filter = ('co_so', 'trang_thai')
 
     search_fields = (
         'co_so__ten_co_so',
@@ -108,11 +151,13 @@ class PhongAdmin(admin.ModelAdmin):
         'mo_ta',
     )
 
-    ordering = (
-        '-ngay_tao',
-    )
+    ordering = ('-ngay_tao',)
 
-    @admin.display(description='Giá phòng')
+    @admin.display(description='Trạng thái', ordering='trang_thai')
+    def hien_thi_trang_thai(self, obj):
+        return obj.get_trang_thai_display()
+
+    @admin.display(description='Giá phòng', ordering='gia_phong')
     def gia_phong_hien_thi(self, obj):
         return f'{obj.gia_phong:,.0f} VNĐ'
 
@@ -120,11 +165,39 @@ class PhongAdmin(admin.ModelAdmin):
     def mo_ta_hien_thi(self, obj):
         if not obj.mo_ta:
             return 'Chưa có mô tả'
-
         if len(obj.mo_ta) > 40:
             return obj.mo_ta[:40] + '...'
-
         return obj.mo_ta
+
+    @admin.display(description='Ngày tạo', ordering='ngay_tao')
+    def ngay_tao_hien_thi(self, obj):
+        return obj.ngay_tao.strftime('%d/%m/%Y %H:%M')
+    def save_related(self, request, form, formsets, change):
+        # Lưu Điện nước, Thanh toán và Hợp đồng trước
+        super().save_related(request, form, formsets, change)
+
+        phong = form.instance
+
+        # Duyệt danh sách điện nước của phòng
+        for dn in DienNuoc.objects.filter(phong=phong):
+            # Tìm hoặc tạo thanh toán cùng phòng, cùng tháng
+            thanh_toan, created = ThanhToan.objects.get_or_create(
+                phong=phong,
+                thang=dn.thang,
+                defaults={
+                    'tien_phong': phong.gia_phong,
+                    'tien_dien': dn.tien_dien(),
+                    'tien_nuoc': dn.tien_nuoc(),
+                }
+            )
+
+            # Cập nhật tiền phòng, điện, nước
+            thanh_toan.tien_phong = phong.gia_phong
+            thanh_toan.tien_dien = dn.tien_dien()
+            thanh_toan.tien_nuoc = dn.tien_nuoc()
+
+            # Lưu để tự tính lại tổng tiền
+            thanh_toan.save()
 
 
 class NguoiThueAdminForm(forms.ModelForm):
@@ -271,6 +344,21 @@ class HopDongAdmin(admin.ModelAdmin):
     ordering = (
         '-ngay_bat_dau',
     )
+
+    readonly_fields = ('xuat_pdf',)
+
+    @admin.display(description='Xuất hợp đồng PDF')
+    def xuat_pdf(self, obj):
+        if not obj or not obj.pk:
+            return 'Lưu hợp đồng trước để xuất PDF.'
+        from django.urls import reverse
+        from django.utils.html import format_html
+
+        url = reverse('hopdong_pdf', args=[obj.pk])
+        return format_html(
+            '<a href="{}" target="_blank" rel="noopener">📄 Xem / Xuất PDF</a>',
+            url,
+        )
 
     @admin.display(description='Tiền cọc')
     def tien_coc_hien_thi(self, obj):

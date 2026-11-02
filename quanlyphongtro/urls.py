@@ -17,6 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, re_path
 from quanly import views
+from quanly.views import hopdong_pdf
 
 from quanly.views import (
     home,
@@ -25,10 +26,20 @@ from quanly.views import (
     dashboard,
     admin_dashboard,
     phong_cua_toi,
+    hopdong_pdf,
+    hop_dong_cua_toi,
+    dien_nuoc_cua_toi,
+    thanh_toan_cua_toi,
 )
 
 
 urlpatterns = [
+    path(
+    'admin/quanly/hopdong/<int:hopdong_id>/pdf/',
+    hopdong_pdf,
+    name='hopdong_pdf',
+    ),
+
     re_path(r'^admin/$', admin_dashboard, name='admin_dashboard'),
     path('admin/', admin.site.urls),
 
@@ -57,9 +68,27 @@ urlpatterns = [
     ),
 
     path(
-    'phong-cua-toi/',
-    views.phong_cua_toi,
-    name='phong_cua_toi'
+        'phong-cua-toi/',
+        phong_cua_toi,
+        name='phong_cua_toi'
+    ),
+
+    path(
+        'hop-dong-cua-toi/',
+        hop_dong_cua_toi,
+        name='hop_dong_cua_toi'
+    ),
+
+    path(
+        'dien-nuoc-cua-toi/',
+        dien_nuoc_cua_toi,
+        name='dien_nuoc_cua_toi'
+    ),
+
+    path(
+        'thanh-toan-cua-toi/',
+        thanh_toan_cua_toi,
+        name='thanh_toan_cua_toi'
     ),
 
     path('', home, name='home'),

@@ -109,6 +109,7 @@ class HopDong(models.Model):
     def __str__(self):
         return f'{self.nguoi_thue.ho_ten} - {self.phong.ten_phong}'
 
+
 class DienNuoc(models.Model):
     phong = models.ForeignKey(
         Phong,
@@ -136,14 +137,8 @@ class DienNuoc(models.Model):
         default=15000
     )
 
-    ghi_chu = models.TextField(
-        blank=True,
-        null=True
-    )
-
-    ngay_tao = models.DateTimeField(
-        auto_now_add=True
-    )
+    ghi_chu = models.TextField(blank=True, null=True)
+    ngay_tao = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         verbose_name = 'Điện nước'
@@ -151,20 +146,40 @@ class DienNuoc(models.Model):
 
     def tien_dien(self):
         so_dien = max(
-            0,
-            self.chi_so_dien_moi - self.chi_so_dien_cu
+            0, self.chi_so_dien_moi - self.chi_so_dien_cu
         )
         return so_dien * self.don_gia_dien
 
     def tien_nuoc(self):
         so_nuoc = max(
-            0,
-            self.chi_so_nuoc_moi - self.chi_so_nuoc_cu
+            0, self.chi_so_nuoc_moi - self.chi_so_nuoc_cu
         )
         return so_nuoc * self.don_gia_nuoc
 
+    
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+
+        thanh_toan, created = ThanhToan.objects.get_or_create(
+            phong=self.phong,
+            thang=self.thang,
+            defaults={
+                'tien_phong': self.phong.gia_phong,
+                'tien_dien': self.tien_dien(),
+                'tien_nuoc': self.tien_nuoc(),
+            }
+        )
+
+        if not created:
+            thanh_toan.tien_phong = self.phong.gia_phong
+            thanh_toan.tien_dien = self.tien_dien()
+            thanh_toan.tien_nuoc = self.tien_nuoc()
+            thanh_toan.save()
+
+
     def __str__(self):
         return f'{self.phong.ten_phong} - {self.thang.strftime("%m/%Y")}'
+
 
 class ThanhToan(models.Model):
     TRANG_THAI_CHOICES = [
@@ -279,3 +294,4 @@ class TaiKhoan(models.Model):
         
     def __str__(self):
         return f'{self.user.username} - {self.get_vai_tro_display()}'
+

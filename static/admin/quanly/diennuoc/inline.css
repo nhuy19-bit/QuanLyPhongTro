@@ -1,0 +1,113 @@
+
+/* Giao diện bảng Điện nước nằm trong form phòng */
+.inline-group {
+    background: #fff;
+    border: 1px solid #e5ebf1;
+    border-radius: 10px;
+    overflow-x: auto;
+    margin-top: 20px;
+}
+
+/* Tiêu đề phần Điện nước */
+.inline-group h2,
+.inline-group h3 {
+    background: #e8fbf9;
+    color: #108580;
+    padding: 14px 16px;
+    font-weight: 700;
+    border-bottom: 1px solid #e5ebf1;
+}
+
+/* Các trường nhập liệu nằm ngang */
+.inline-group table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+}
+
+.inline-group thead th {
+    background: #f8fafc;
+    color: #475467;
+    padding: 10px;
+    text-align: left;
+    white-space: nowrap;
+    border-bottom: 1px solid #e5ebf1;
+}
+
+.inline-group tbody td {
+    padding: 10px;
+    border-bottom: 1px solid #edf0f4;
+    vertical-align: middle;
+}
+
+.inline-group input,
+.inline-group select {
+    box-sizing: border-box;
+    max-width: 100%;
+    min-height: 34px;
+    border: 1px solid #d8e1e9;
+    border-radius: 6px;
+    padding: 6px 8px;
+}
+
+.inline-group input:focus,
+.inline-group select:focus {
+    border-color: #35c9c3;
+    outline: 2px solid rgba(53, 201, 195, 0.15);
+}
+
+.inline-group .add-row a {
+    color: #108580;
+    font-weight: 600;
+}
+
+/* Bố cục ngang cho các form Điện nước, Thanh toán, Hợp đồng */
+body.change-form #content-main .inline-group {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    overflow-x: auto;
+    margin-top: 20px;
+    border-radius: 12px;
+}
+
+/* Bảng chiếm toàn bộ chiều ngang */
+body.change-form #content-main .inline-group table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: auto;
+}
+
+/* Tiêu đề cột */
+body.change-form #content-main .inline-group thead th {
+    background: #e8fbf9;
+    color: #108580;
+    padding: 12px 8px;
+    text-align: left;
+    white-space: normal;
+}
+
+/* Các ô dữ liệu */
+body.change-form #content-main .inline-group tbody td {
+    padding: 10px 8px;
+    vertical-align: middle;
+    border-bottom: 1px solid #edf0f4;
+}
+
+/* Trường nhập liệu gọn theo từng cột */
+body.change-form #content-main .inline-group input:not([type="checkbox"]),
+body.change-form #content-main .inline-group select {
+    width: 100%;
+    min-width: 65px;
+    max-width: 100%;
+    box-sizing: border-box;
+    padding: 8px;
+    border: 1px solid #d8e1e9;
+    border-radius: 7px;
+}
+
+/* Không để nội dung đẩy bảng rộng bất thường */
+body.change-form #content-main .inline-group td,
+body.change-form #content-main .inline-group th {
+    overflow-wrap: anywhere;
+}

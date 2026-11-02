@@ -1,0 +1,314 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Hợp đồng của tôi - Quản lý phòng trọ</title>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --navy: #0f172a;
+            --blue: #1d4ed8;
+            --muted: #64748b;
+            --line: #e2e8f0;
+            --canvas: #f8fafc;
+            --green: #087f5b;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            background: var(--canvas);
+            color: var(--navy);
+            font-family: 'Manrope', sans-serif;
+        }
+
+        .topbar {
+            background: linear-gradient(135deg, #0f172a, #1d4ed8);
+            box-shadow: 0 8px 20px rgba(15, 23, 42, .12);
+        }
+
+        .topbar-inner, .page {
+            width: min(1160px, calc(100% - 48px));
+            margin: 0 auto;
+        }
+
+        .topbar-inner {
+            min-height: 76px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        .brand, .back {
+            color: white;
+            text-decoration: none;
+            font-weight: 800;
+        }
+
+        .brand { font-size: 18px; }
+        .back { font-size: 13px; }
+
+        .page { padding: 46px 0 64px; }
+
+        .eyebrow, .contract-label {
+            color: var(--blue);
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: .09em;
+            text-transform: uppercase;
+        }
+
+        h1 {
+            margin: 8px 0 10px;
+            font-size: clamp(28px, 4vw, 36px);
+            font-weight: 800;
+            letter-spacing: -.03em;
+        }
+
+        .subtitle {
+            margin: 0 0 32px;
+            color: var(--muted);
+            font-size: 15px;
+        }
+
+        .contract-card {
+            background: white;
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            box-shadow: 0 12px 32px rgba(15, 23, 42, .06);
+            overflow: hidden;
+            margin-bottom: 22px;
+        }
+
+        .card-head {
+            padding: 26px 30px;
+            border-bottom: 1px solid var(--line);
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 16px;
+        }
+
+        .card-head h2 {
+            margin: 8px 0 6px;
+            font-size: 26px;
+            font-weight: 800;
+        }
+
+        .contract-code {
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .status {
+            padding: 9px 12px;
+            border-radius: 8px;
+            background: #e5f7f0;
+            color: var(--green);
+            font-size: 12px;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        .status.expired { background: #eef2f7; color: #475569; }
+        .status.cancelled { background: #fee4e2; color: #b42318; }
+        .status.other { background: #fef3c7; color: #92400e; }
+
+        .contract-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            padding: 8px 30px 20px;
+        }
+
+        .field {
+            min-width: 0;
+            padding: 18px 0;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .field:nth-child(odd) { padding-right: 22px; }
+        .field:nth-child(even) { padding-left: 22px; }
+        .field:nth-last-child(-n+2) { border-bottom: 0; }
+
+        .field span {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--muted);
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: .04em;
+            text-transform: uppercase;
+        }
+
+        .field strong {
+            display: block;
+            font-size: 15px;
+            line-height: 1.6;
+            overflow-wrap: anywhere;
+        }
+
+        .empty {
+            padding: 40px 24px;
+            background: white;
+            border: 1px dashed #cbd5e1;
+            border-radius: 16px;
+            text-align: center;
+            color: var(--muted);
+        }
+
+        .empty strong {
+            display: block;
+            color: var(--navy);
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
+
+        .notice {
+            padding: 20px 24px;
+            border: 1px solid #bfdbfe;
+            border-radius: 12px;
+            background: #eff6ff;
+            color: #1e40af;
+        }
+
+        @media (max-width: 640px) {
+            .topbar-inner, .page {
+                width: calc(100% - 28px);
+            }
+
+            .topbar-inner { min-height: 68px; }
+            .page { padding-top: 32px; }
+
+            .card-head {
+                padding: 22px 18px;
+                flex-direction: column;
+            }
+
+            .contract-grid {
+                grid-template-columns: 1fr;
+                padding: 4px 18px 14px;
+            }
+
+            .field,
+            .field:nth-child(odd),
+            .field:nth-child(even) {
+                padding: 14px 0;
+                border-bottom: 1px solid var(--line);
+            }
+
+            .field:last-child { border-bottom: 0; }
+        }
+    </style>
+</head>
+
+<body>
+<header class="topbar">
+    <div class="topbar-inner">
+        <a class="brand" href="{% url 'dashboard' %}">⌂ Quản lý phòng trọ</a>
+        <a class="back" href="{% url 'dashboard' %}">← Về tổng quan</a>
+    </div>
+</header>
+
+<main class="page">
+    <div class="eyebrow">Thông tin hợp đồng</div>
+    <h1>Hợp đồng của tôi</h1>
+    <p class="subtitle">Xem thông tin và lịch sử các hợp đồng thuê phòng của bạn.</p>
+
+    {% if error %}
+        <div class="notice">{{ error }}</div>
+    {% elif danh_sach_hop_dong %}
+        {% for hop_dong in danh_sach_hop_dong %}
+            <section class="contract-card">
+                <div class="card-head">
+                    <div>
+                        <div class="contract-label">Thông tin hợp đồng</div>
+                        <h2>{{ hop_dong.phong.ten_phong }}</h2>
+                        <div class="contract-code">
+                            Mã hợp đồng: HD{{ hop_dong.pk|stringformat:"04d" }}
+                        </div>
+                    </div>
+
+                    {% if hop_dong.trang_thai == 'hieu_luc' %}
+                        <span class="status">● Đang hiệu lực</span>
+                    {% elif hop_dong.trang_thai == 'het_han' %}
+                        <span class="status expired">● Đã hết hạn</span>
+                    {% elif hop_dong.trang_thai == 'huy' %}
+                        <span class="status cancelled">● Đã hủy</span>
+                    {% else %}
+                        <span class="status other">{{ hop_dong.get_trang_thai_display }}</span>
+                    {% endif %}
+                </div>
+
+                <div class="contract-grid">
+                    <div class="field">
+                        <span>Người thuê</span>
+                        <strong>{{ hop_dong.nguoi_thue.ho_ten }}</strong>
+                    </div>
+
+                    <div class="field">
+                        <span>Phòng thuê</span>
+                        <strong>{{ hop_dong.phong.ten_phong }}</strong>
+                    </div>
+
+                    <div class="field">
+                        <span>Cơ sở</span>
+                        <strong>{{ hop_dong.phong.co_so.ten_co_so|default:"Chưa cập nhật" }}</strong>
+                    </div>
+
+                    <div class="field">
+                        <span>Địa chỉ cơ sở</span>
+                        <strong>{{ hop_dong.phong.co_so.dia_chi|default:"Chưa cập nhật" }}</strong>
+                    </div>
+
+                    <div class="field">
+                        <span>Ngày bắt đầu</span>
+                        <strong>{{ hop_dong.ngay_bat_dau|date:"d/m/Y" }}</strong>
+                    </div>
+
+                    <div class="field">
+                        <span>Ngày kết thúc</span>
+                        <strong>
+                            {% if hop_dong.ngay_ket_thuc %}
+                                {{ hop_dong.ngay_ket_thuc|date:"d/m/Y" }}
+                            {% else %}
+                                Không xác định
+                            {% endif %}
+                        </strong>
+                    </div>
+
+                    <div class="field">
+                        <span>Giá thuê</span>
+                        <strong>{{ hop_dong.phong.gia_phong|floatformat:0 }} VNĐ/tháng</strong>
+                    </div>
+
+                    <div class="field">
+                        <span>Tiền đặt cọc</span>
+                        <strong>{{ hop_dong.tien_coc|floatformat:0 }} VNĐ</strong>
+                    </div>
+
+                    <div class="field">
+                        <span>Trạng thái hợp đồng</span>
+                        <strong>{{ hop_dong.get_trang_thai_display }}</strong>
+                    </div>
+
+                    <div class="field">
+                        <span>Ghi chú</span>
+                        <strong>{{ hop_dong.ghi_chu|default:"Không có ghi chú" }}</strong>
+                    </div>
+                </div>
+            </section>
+        {% endfor %}
+    {% else %}
+        <div class="empty">
+            <strong>Bạn chưa có hợp đồng thuê phòng</strong>
+            <p>Thông tin hợp đồng sẽ hiển thị tại đây khi được cập nhật.</p>
+        </div>
+    {% endif %}
+</main>
+</body>
+</html>

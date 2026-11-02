@@ -376,10 +376,364 @@ body:has(.dashboard-page) #content > h1 {
     overflow: hidden;
 }
 
+/* RESTORE ORIGINAL FORM STYLES
+
+body.change-form {
+    background: #f4f7fb;
+    color: #263548;
+}
+
+body.change-form #content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 30px 30px !important;
+}
+
+body.change-form #content > h1 {
+    display: none !important;
+}
+
+body.change-form #content-main .module,
+body.change-form #content-main fieldset,
+body.change-form .inline-group {
+    background: #fff;
+    border: 1px solid #e5ebf1;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 5px 20px rgba(30, 50, 70, 0.05);
+}
+
+body.change-form #content-main .module h2,
+body.change-form #content-main fieldset h2,
+body.change-form .inline-group h2 {
+    margin: 0;
+    padding: 16px 20px;
+    background: #fff;
+    color: #263548;
+    border-bottom: 1px solid #e5ebf1;
+    font-size: 17px;
+    font-weight: 700;
+}
+
+body.change-form .form-row {
+    padding: 18px 20px;
+    border-bottom: 1px solid #edf0f4;
+}
+
+body.change-form .aligned {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    align-items: start;
+}
+
+body.change-form .aligned .form-row {
+    display: block;
+    min-width: 0;
+}
+
+body.change-form .aligned .form-row > label {
+    display: block;
+    margin: 0 0 8px;
+}
+
+body.change-form .aligned .form-row > div {
+    min-width: 0;
+}
+
+body.change-form .aligned label {
+    color: #344054;
+    font-weight: 600;
+}
+
+body.change-form input[type="text"],
+body.change-form input[type="email"],
+body.change-form input[type="password"],
+body.change-form input[type="number"],
+body.change-form input[type="url"],
+body.change-form input[type="date"],
+body.change-form select,
+body.change-form textarea {
+    border: 1px solid #d8e1e9;
+    border-radius: 8px;
+    padding: 10px 12px;
+    min-height: 40px;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+body.change-form input:focus,
+body.change-form select:focus,
+body.change-form textarea:focus {
+    border-color: #35c9c3;
+    outline: 2px solid rgba(53, 201, 195, 0.15);
+}
+
+body.change-form .inline-group .tabular thead th {
+    padding: 12px 14px;
+    background: #fff;
+    color: #263548;
+    border-bottom: 1px solid #e5ebf1;
+}
+
+body.change-form .inline-group .tabular td {
+    padding: 12px 14px;
+    border-bottom: 1px solid #edf0f4;
+    vertical-align: middle;
+}
+
+body.change-form .inline-group .tabular tbody tr:hover {
+    background: #fff;
+}
+
+body.change-form .inline-group {
+    overflow-x: auto;
+}
+
+body.change-form .inline-group .tabular {
+    width: 100%;
+    min-width: 0;
+    table-layout: fixed;
+}
+
+body.change-form .inline-group .tabular td.original,
+body.change-form .inline-group .tabular th:first-child {
+    width: 190px;
+    min-width: 190px;
+    white-space: nowrap;
+}
+
+body.change-form .inline-group .tabular th:nth-child(2),
+body.change-form .inline-group .tabular th:nth-child(3),
+body.change-form .inline-group .tabular th:nth-child(4),
+body.change-form .inline-group .tabular th:nth-child(5),
+body.change-form .inline-group .tabular td:nth-child(2),
+body.change-form .inline-group .tabular td:nth-child(3),
+body.change-form .inline-group .tabular td:nth-child(4),
+body.change-form .inline-group .tabular td:nth-child(5) {
+    width: 90px;
+}
+
+body.change-form .inline-group .tabular th:nth-child(6),
+body.change-form .inline-group .tabular th:nth-child(7),
+body.change-form .inline-group .tabular td:nth-child(6),
+body.change-form .inline-group .tabular td:nth-child(7) {
+    width: 145px;
+}
+
+body.change-form .inline-group .tabular input,
+body.change-form .inline-group .tabular select {
+    width: 100%;
+    max-width: 100%;
+}
+
+Hien thi cac dong lien quan theo cung dang form ngang voi P101.
+body.change-form .inline-group .tabular thead {
+    display: none;
+}
+
+body.change-form .inline-group .tabular tbody tr.form-row {
+    display: grid;
+    grid-template-columns: repeat(9, minmax(90px, 1fr));
+    gap: 16px;
+    align-items: start;
+    padding: 20px;
+}
+
+body.change-form .inline-group .tabular tbody tr.form-row > td {
+    display: block;
+    width: auto !important;
+    min-width: 0 !important;
+    padding: 0;
+    border: 0;
+}
+
+body.change-form .inline-group .tabular tbody tr.form-row > td.original {
+    grid-column: span 1;
+}
+
+body.change-form .inline-group .tabular tbody tr.form-row > td.delete {
+    grid-column: span 1;
+}
+
+body.change-form .dien-nuoc-inline .tabular tbody tr.form-row > td:nth-child(2)::before {
+    content: "Thang";
+}
+
+body.change-form .dien-nuoc-inline .tabular tbody tr.form-row > td:nth-child(3)::before {
+    content: "Chi so dien cu";
+}
+
+body.change-form .dien-nuoc-inline .tabular tbody tr.form-row > td:nth-child(4)::before {
+    content: "Chi so dien moi";
+}
+
+body.change-form .dien-nuoc-inline .tabular tbody tr.form-row > td:nth-child(5)::before {
+    content: "Chi so nuoc cu";
+}
+
+body.change-form .dien-nuoc-inline .tabular tbody tr.form-row > td:nth-child(6)::before {
+    content: "Chi so nuoc moi";
+}
+
+body.change-form .dien-nuoc-inline .tabular tbody tr.form-row > td:nth-child(7)::before {
+    content: "Don gia dien";
+}
+
+body.change-form .dien-nuoc-inline .tabular tbody tr.form-row > td:nth-child(8)::before {
+    content: "Don gia nuoc";
+}
+
+body.change-form #dien-nuoc-group .tabular tbody tr.form-row > td::before {
+    display: block;
+    margin-bottom: 8px;
+    color: #344054;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+body.change-form .thanh-toan-inline .tabular tbody tr.form-row > td:nth-child(2)::before {
+    content: "Thang";
+}
+
+body.change-form .thanh-toan-inline .tabular tbody tr.form-row > td:nth-child(3)::before {
+    content: "Tien phong";
+}
+
+body.change-form .thanh-toan-inline .tabular tbody tr.form-row > td:nth-child(4)::before {
+    content: "Tien dien";
+}
+
+body.change-form .thanh-toan-inline .tabular tbody tr.form-row > td:nth-child(5)::before {
+    content: "Tien nuoc";
+}
+
+body.change-form .thanh-toan-inline .tabular tbody tr.form-row > td:nth-child(6)::before {
+    content: "Tien khac";
+}
+
+body.change-form .thanh-toan-inline .tabular tbody tr.form-row > td:nth-child(7)::before {
+    content: "Tong tien";
+}
+
+body.change-form .thanh-toan-inline .tabular tbody tr.form-row > td:nth-child(8)::before {
+    content: "Trang thai";
+}
+
+body.change-form .hop-dong-inline .tabular tbody tr.form-row > td:nth-child(2)::before {
+    content: "Nguoi thue";
+}
+
+body.change-form .hop-dong-inline .tabular tbody tr.form-row > td:nth-child(3)::before {
+    content: "Ngay bat dau";
+}
+
+body.change-form .hop-dong-inline .tabular tbody tr.form-row > td:nth-child(4)::before {
+    content: "Ngay ket thuc";
+}
+
+body.change-form .hop-dong-inline .tabular tbody tr.form-row > td:nth-child(5)::before {
+    content: "Tien coc";
+}
+
+body.change-form .hop-dong-inline .tabular tbody tr.form-row > td:nth-child(6)::before {
+    content: "Trang thai";
+}
+
+body.change-form .hop-dong-inline .tabular tbody tr.form-row {
+    grid-template-columns: repeat(7, minmax(90px, 1fr));
+}
+
+body.change-form .inline-group input,
+body.change-form .inline-group select {
+    min-height: 38px;
+    padding: 8px 10px;
+}
+
+body.change-form #dien-nuoc-group .tabular thead {
+    display: table-header-group;
+}
+
+body.change-form #dien-nuoc-group .tabular tbody tr.form-row {
+    display: table-row;
+    padding: 0;
+}
+
+body.change-form #dien-nuoc-group .tabular tbody tr.form-row > td {
+    display: table-cell;
+    padding: 12px 14px;
+    border-bottom: 1px solid #edf0f4;
+    vertical-align: middle;
+}
+
+body.change-form #dien-nuoc-group .tabular tbody tr.form-row > td::before {
+    display: none;
+}
+
+body.change-form .submit-row {
+    margin-top: 24px;
+    padding: 18px;
+    background: #fff;
+    border: 1px solid #e5ebf1;
+    border-radius: 12px;
+}
+
+body.change-form .submit-row input,
+body.change-form .submit-row button {
+    border: none;
+    border-radius: 8px;
+    padding: 11px 20px;
+    font-weight: 600;
+}
+
+body.change-form .submit-row input[name="_save"] {
+    background: #159b96;
+    color: #fff;
+}
+
+body.change-form .submit-row input[name="_save"]:hover {
+    background: #108580;
+}
+
+body.change-form .submit-row input[name="_addanother"] {
+    background: #e8fbf9;
+    color: #108580;
+}
+
+body.change-form .submit-row input[name="_continue"] {
+    background: #edf2f7;
+    color: #344054;
+}
+
+body.change-form .help,
+body.change-form .helptext {
+    color: #8491a3;
+}
+
+@media (max-width: 768px) {
+    body.change-form #content {
+        padding: 0 15px 30px !important;
+    }
+
+    body.change-form .aligned .form-row {
+        display: block;
+    }
+
+    body.change-form .aligned {
+        display: block;
+    }
+
+    body.change-form .aligned .form-row > label {
+        display: block;
+        margin-bottom: 8px;
+    }
+}
+
+
+*/
 
 /* =====================================
-   BUTTON
-   ===================================== */
+    BUTTON
+    ===================================== */
 
 .button,
 input[type=submit],
