@@ -1,129 +1,46 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Quản lý phòng trọ</title>
-
-    <link
-        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-        rel="stylesheet"
-    >
-
-    <style>
-        :root {
-            --admin-navy: #0f172a;
-            --admin-blue: #1d4ed8;
-            --admin-muted: #64748b;
-        }
-
-        body {
-            background: #f8fafc !important;
-        }
-
-        .navbar {
-            background: linear-gradient(135deg, var(--admin-navy) 0%, var(--admin-blue) 100%) !important;
-            box-shadow: 0 8px 20px rgba(15, 23, 42, 0.12);
-        }
-
-        .card {
-            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-            border: 1px solid rgba(148, 163, 184, 0.18) !important;
-            border-radius: 16px;
-            box-shadow: 0 8px 18px rgba(15, 23, 42, 0.05) !important;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, var(--admin-navy), var(--admin-blue));
-            border-color: var(--admin-blue);
-        }
-
-        .btn-primary:hover {
-            background: linear-gradient(135deg, #1e293b, #2563eb);
-            border-color: #2563eb;
-        }
-
-        .text-muted {
-            color: var(--admin-muted) !important;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quản lý phòng trọ</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<style>
+:root{--navy:#0f172a;--blue:#1d4ed8;--muted:#64748b}
+*{box-sizing:border-box}
+html,body{min-height:100%;margin:0}
+body{background:#f8fafc;color:var(--navy);display:flex;flex-direction:column;min-height:100vh}
+.navbar{background:linear-gradient(135deg,var(--navy),var(--blue));box-shadow:0 8px 20px #0f172a20;flex-shrink:0;padding:.55rem 0}
+.navbar-brand{font-size:1.15rem}
+main{flex:1;display:flex;align-items:center;justify-content:center;padding:16px 12px}
+.hero{width:100%;max-width:850px}
+.main-card{border:1px solid #e2e8f0;border-radius:18px;background:#fff;box-shadow:0 12px 32px #0f172a10;padding:22px 30px}
+.hero-icon{font-size:42px;line-height:1.15}
+h1{font-size:clamp(1.4rem,3vw,2rem);margin:9px 0 6px}
+.intro{font-size:.92rem;margin:0 0 14px}
+.role-card{border:1px solid #dbe3ee;border-radius:14px;padding:17px 17px 15px;height:100%;display:flex;flex-direction:column;align-items:center;transition:.2s;background:#fff}
+.role-card:hover{border-color:var(--blue);box-shadow:0 8px 18px #1d4ed81a}
+.role-icon{font-size:35px;line-height:1.1}
+.role-card h2{font-size:1.08rem;margin:9px 0 5px}
+.role-card p{font-size:.83rem;line-height:1.45;min-height:38px;margin:0 0 12px}
+.btn-role{background:linear-gradient(135deg,var(--navy),var(--blue));color:#fff;border:0;margin-top:auto}
+.btn-role:hover{color:#fff;background:#1d4ed8}
+.text-muted{color:var(--muted)!important}
+footer{flex-shrink:0;padding:9px 0;font-size:.85rem}
+@media(min-width:768px){body{height:100vh;overflow:hidden}}
+@media(max-height:650px) and (min-width:768px){.main-card{padding:12px 24px}.hero-icon{font-size:30px}.role-card{padding:10px}.role-icon{font-size:28px}.intro{margin-bottom:8px}.role-card p{margin-bottom:7px}footer{padding:4px 0}}
+@media(max-width:575px){main{padding:14px 10px}.main-card{padding:18px 14px}.role-card{padding:14px}.role-card p{min-height:0}.navbar-brand{font-size:1rem}}
+</style>
 </head>
-
-<body class="bg-light">
-
-<nav class="navbar navbar-dark bg-primary">
-    <div class="container">
-
-        <a class="navbar-brand fw-bold" href="/">
-            🏠 Quản Lý Phòng Trọ
-        </a>
-
-        <div>
-            <a href="{% url 'login' %}" class="btn btn-light me-2">
-                Đăng nhập
-            </a>
-        </div>
-
-    </div>
-</nav>
-
-
-<section class="py-5">
-    <div class="container">
-
-        <div class="row justify-content-center">
-
-            <div class="col-md-8 text-center">
-
-                <div class="card border-0 shadow-sm">
-
-                    <div class="card-body p-5">
-
-                        <div style="font-size: 80px;">
-                            🏠
-                        </div>
-
-                        <h1 class="fw-bold mt-3">
-                            Hệ thống quản lý phòng trọ
-                        </h1>
-
-                        <p class="text-muted mt-3">
-                            Hỗ trợ quản lý phòng trọ,
-                            người thuê, hợp đồng,
-                            điện nước và thanh toán.
-                        </p>
-
-                        <div class="mt-4">
-
-                            <a
-                                href="{% url 'login' %}"
-                                class="btn btn-primary btn-lg me-2"
-                            >
-                                Đăng nhập
-                            </a>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-</section>
-
-
-<footer class="text-center text-muted py-4">
-
-    <small>
-        © 2026 - Hệ thống quản lý phòng trọ
-    </small>
-
-</footer>
-
-</body>
-</html>
+<body>
+<nav class="navbar navbar-dark"><div class="container"><a class="navbar-brand fw-bold" href="{% url 'home' %}">🏠 Quản Lý Phòng Trọ</a></div></nav>
+<main class="container"><div class="main-card hero text-center">
+<div class="hero-icon">🏠</div>
+<h1 class="fw-bold">Hệ thống quản lý phòng trọ</h1>
+<p class="text-muted intro">Hỗ trợ quản lý phòng trọ, người thuê, hợp đồng, điện nước và thanh toán.</p>
+<div class="row g-3" id="chon-vai-tro">
+<div class="col-md-6"><div class="role-card"><div class="role-icon">🛡️</div><h2 class="fw-bold">Admin / Chủ trọ</h2><p class="text-muted">Quản lý phòng, người thuê, hợp đồng, điện nước và thanh toán.</p><a href="{% url 'admin:login' %}?next=/admin/" class="btn btn-role w-100 py-2">Đăng nhập Admin</a></div></div>
+<div class="col-md-6"><div class="role-card"><div class="role-icon">🏡</div><h2 class="fw-bold">Người thuê</h2><p class="text-muted">Xem phòng, hợp đồng, điện nước, hóa đơn và thông báo.</p><a href="{% url 'login' %}" class="btn btn-role w-100 py-2">Đăng nhập Người thuê</a></div></div>
+</div></div></main>
+<footer class="text-center text-muted"><small>© 2026 - Hệ thống quản lý phòng trọ</small></footer>
+</body></html>

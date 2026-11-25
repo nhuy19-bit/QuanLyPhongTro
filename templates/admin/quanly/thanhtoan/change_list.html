@@ -1,4 +1,5 @@
 {% extends "admin/change_list.html" %}
+{% load humanize %}
 
 {% block content %}
 
@@ -272,37 +273,37 @@
 
             <div class="payment-info">
                 📅 <strong>Tháng:</strong>
-                {{ thanh_toan.thang }}
+                {{ thanh_toan.thang|date:"d/m/Y" }}
             </div>
 
 
             <div class="payment-info">
                 🏠 <strong>Tiền phòng:</strong>
-                {{ thanh_toan.tien_phong|floatformat:0 }} VNĐ
+                {{ thanh_toan.tien_phong|floatformat:0|intcomma }}VNĐ
             </div>
 
 
             <div class="payment-info">
                 ⚡ <strong>Tiền điện:</strong>
-                {{ thanh_toan.tien_dien|floatformat:0 }} VNĐ
+                {{ thanh_toan.tien_dien|floatformat:0|intcomma }}VNĐ
             </div>
 
 
             <div class="payment-info">
                 💧 <strong>Tiền nước:</strong>
-                {{ thanh_toan.tien_nuoc|floatformat:0 }} VNĐ
+                {{ thanh_toan.tien_nuoc|floatformat:0|intcomma }}VNĐ
             </div>
 
 
             <div class="payment-info">
                 📦 <strong>Chi phí khác:</strong>
-                {{ thanh_toan.chi_phi_khac|floatformat:0 }} VNĐ
+                {{ thanh_toan.chi_phi_khac|floatformat:0|intcomma }}VNĐ
             </div>
 
 
             <div class="payment-total">
                 💵 Tổng tiền:
-                {{ thanh_toan.tong_tien|floatformat:0 }} VNĐ
+                {{ thanh_toan.tong_tien|floatformat:0|intcomma }}VNĐ
             </div>
 
 
@@ -352,6 +353,34 @@
 </div>
 
 <style>
+    /* Không cắt chữ ở tiêu đề các cột */
+    #result_list thead th {
+        white-space: nowrap !important;
+        min-width: max-content;
+    }
+
+    /* Cho bảng tự mở rộng theo nội dung */
+    #changelist-form #result_list {
+        width: max-content !important;
+        min-width: 100% !important;
+        table-layout: auto !important;
+    }
+
+    /* Cho phép cuộn ngang nếu bảng quá rộng */
+    .results {
+        overflow-x: auto !important;
+    }
+
+    #result_list th,
+    #result_list td {
+        white-space: nowrap;
+    }
+
+    #changelist-form #result_list th.column-ngay_thanh_toan_hien_thi,
+    #changelist-form #result_list td.field-ngay_thanh_toan_hien_thi {
+        min-width: 90px !important;
+        white-space: nowrap !important;
+    }
     .payment-grid { display: none !important; }
     #changelist-form { display: block !important; }
     #changelist-form table { width: 100%; background: #fff; border-collapse: collapse; }

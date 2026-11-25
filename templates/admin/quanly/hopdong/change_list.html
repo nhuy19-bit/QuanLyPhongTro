@@ -1,4 +1,5 @@
 {% extends "admin/change_list.html" %}
+{% load humanize %}
 
 {% block content %}
 
@@ -297,19 +298,19 @@
 
             <div class="contract-info">
                 📅 <strong>Ngày bắt đầu:</strong>
-                {{ hop_dong.ngay_bat_dau }}
+                {{ hop_dong.ngay_bat_dau|date:"d/m/Y" }}
             </div>
 
 
             <div class="contract-info">
                 📅 <strong>Ngày kết thúc:</strong>
-                {{ hop_dong.ngay_ket_thuc }}
+                {{ hop_dong.ngay_ket_thuc|date:"d/m/Y" }}
             </div>
 
 
             <div class="contract-info">
                 💰 <strong>Tiền cọc:</strong>
-                {{ hop_dong.tien_coc|floatformat:0 }} VNĐ
+                {{ hop_dong.tien_coc|floatformat:0|intcomma }}VNĐ
             </div>
 
 

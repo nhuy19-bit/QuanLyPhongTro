@@ -1,165 +1,450 @@
+
 {% extends "admin/base_site.html" %}
 {% load admin_list admin_urls %}
 
 {% block content %}
+
 <style>
-    .shared-list-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 20px;
+
+/* ==========================================
+   TIÊU ĐỀ VÀ NÚT THÊM
+========================================== */
+
+.shared-list-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.shared-list-title {
+    color: #108580;
+    font-size: 24px;
+    font-weight: 700;
+}
+
+.shared-add-button {
+    display: inline-block;
+    padding: 10px 16px;
+    border-radius: 7px;
+    background: #159b96;
+    color: #fff !important;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none !important;
+}
+
+.shared-add-button:hover {
+    background: #108580;
+}
+
+/* ==========================================
+   BỐ CỤC BẢNG VÀ BỘ LỌC
+========================================== */
+
+.shared-layout {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    width: 100%;
+    min-width: 0;
+}
+
+.shared-main {
+    flex: 1 1 0;
+    min-width: 0;
+    max-width: 100%;
+}
+
+.shared-filter-sidebar {
+    flex: 0 0 200px;
+    width: 200px;
+    box-sizing: border-box;
+    padding: 16px;
+    background: #fff;
+    border: 1px solid #e5ebf1;
+    border-radius: 12px;
+    box-shadow: 0 5px 20px rgba(30, 50, 70, 0.05);
+}
+
+.shared-filter-heading {
+    margin: 0 0 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #e5ebf1;
+    color: #108580;
+    font-size: 17px;
+    font-weight: 700;
+}
+
+.shared-filter-group {
+    margin-bottom: 20px;
+}
+
+.shared-filter-group:last-child {
+    margin-bottom: 0;
+}
+
+.shared-filter-group h3 {
+    margin: 0 0 10px;
+    color: #334155;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.shared-filter-group ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.shared-filter-group li {
+    margin-bottom: 5px;
+}
+
+.shared-filter-group a {
+    display: block;
+    padding: 8px 10px;
+    border-radius: 7px;
+    color: #64748b !important;
+    font-size: 13px;
+    text-decoration: none !important;
+    overflow-wrap: anywhere;
+}
+
+.shared-filter-group a:hover {
+    background: #f0fdfa;
+    color: #0d9488 !important;
+}
+
+.shared-filter-group li.selected a {
+    background: #ccfbf1;
+    color: #0f766e !important;
+    font-weight: 700;
+}
+
+/* ==========================================
+   TÌM KIẾM VÀ THAO TÁC
+========================================== */
+
+.shared-tools {
+    margin-bottom: 14px;
+}
+
+.shared-search,
+.shared-actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    min-height: 42px;
+    padding: 8px 10px;
+    background: #fff;
+    border: 1px solid #e5ebf1;
+    border-radius: 8px;
+}
+
+.shared-actions {
+    margin-top: 8px;
+    margin-bottom: 8px;
+}
+
+.shared-search input[type="text"],
+.shared-search input[type="submit"],
+.shared-actions select,
+.shared-actions button {
+    min-height: 32px;
+    max-width: 100%;
+    box-sizing: border-box;
+    padding: 5px 10px;
+    border: 1px solid #d8e1e9;
+    border-radius: 6px;
+}
+
+.shared-search input[type="submit"],
+.shared-actions button {
+    background: #159b96;
+    color: #fff;
+    border-color: #159b96;
+    cursor: pointer;
+}
+
+/* ==========================================
+   BẢNG DANH SÁCH
+========================================== */
+
+.shared-table {
+    display: block !important;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+    background: #fff;
+    border: 1px solid #e5ebf1;
+    border-radius: 12px;
+    box-sizing: border-box;
+    box-shadow: 0 5px 20px rgba(30, 50, 70, 0.05);
+}
+
+.shared-table #result_list {
+    width: 100%;
+    min-width: 0;
+    margin: 0;
+    border-collapse: collapse;
+    table-layout: fixed;
+    background: #fff;
+}
+
+.shared-table #result_list th,
+.shared-table #result_list td {
+    box-sizing: border-box;
+    min-width: 0;
+    max-width: 0;
+    vertical-align: middle;
+}
+
+/* ==========================================
+   TIÊU ĐỀ CỘT NẰM TRÊN MỘT HÀNG
+========================================== */
+
+.shared-table #result_list thead th {
+    padding: 12px 5px;
+    background: #e8fbf9;
+    color: #108580;
+    font-size: 11px;
+    text-align: left;
+    white-space: nowrap !important;
+    overflow-wrap: normal !important;
+    word-break: normal !important;
+    overflow: hidden;
+    text-overflow: clip;
+}
+
+.shared-table #result_list thead th .text,
+.shared-table #result_list thead th .text a {
+    white-space: nowrap !important;
+    overflow-wrap: normal !important;
+    word-break: normal !important;
+    text-decoration: none !important;
+}
+
+/* Giữ biểu tượng sắp xếp gọn gàng */
+.shared-table #result_list thead th .text {
+    display: inline-block;
+    max-width: 100%;
+}
+
+.shared-table #result_list thead th .sortoptions {
+    white-space: nowrap;
+}
+
+/* ==========================================
+   NỘI DUNG DÀI TỰ ĐỘNG XUỐNG DÒNG
+========================================== */
+
+.shared-table #result_list tbody th,
+.shared-table #result_list tbody td {
+    padding: 12px 7px;
+    color: #596875;
+    font-size: 12px;
+    line-height: 1.6;
+    border-top: 1px solid #edf0f4;
+
+    white-space: normal !important;
+    overflow-wrap: anywhere !important;
+    word-break: normal !important;
+    text-overflow: clip !important;
+    overflow: visible !important;
+    height: auto !important;
+}
+
+.shared-table #result_list tbody th a,
+.shared-table #result_list tbody td a {
+    color: #108580;
+    font-weight: 600;
+    text-decoration: none !important;
+
+    white-space: normal !important;
+    overflow-wrap: anywhere !important;
+    word-break: normal !important;
+    text-overflow: clip !important;
+}
+
+.shared-table #result_list tbody tr {
+    height: auto !important;
+}
+
+.shared-table #result_list tbody tr:hover {
+    background: #f8fffe;
+}
+
+/* Cột chọn nhiều bản ghi */
+.shared-table #result_list .action-checkbox-column {
+    width: 36px !important;
+    min-width: 36px;
+    max-width: 36px;
+    text-align: center;
+}
+
+/* Không để nội dung dài làm tràn bảng */
+.shared-table #result_list img,
+.shared-table #result_list input {
+    max-width: 100%;
+}
+
+/* ==========================================
+   PHÂN TRANG
+========================================== */
+
+.paginator {
+    padding: 14px 0;
+}
+
+/* ==========================================
+   RESPONSIVE
+========================================== */
+
+@media (max-width: 1100px) {
+    .shared-layout {
+        flex-direction: column;
     }
 
-    .shared-list-title {
-        color: #108580;
-        font-size: 24px;
-        font-weight: 700;
-    }
-
-    .shared-add-button {
-        display: inline-block;
-        padding: 10px 16px;
-        border-radius: 7px;
-        background: #159b96;
-        color: #fff !important;
-        font-size: 13px;
-        font-weight: 600;
-        text-decoration: none !important;
-    }
-
-    .shared-add-button:hover {
-        background: #108580;
-    }
-
-    .shared-tools {
-        margin-bottom: 14px;
-    }
-
-    .shared-search,
-    .shared-actions {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        min-height: 42px;
-        padding: 8px 10px;
-        background: #fff;
-        border: 1px solid #e5ebf1;
-        border-radius: 8px;
-    }
-
-    .shared-actions {
-        margin-top: 8px;
-    }
-
-    .shared-search input[type="text"],
-    .shared-search input[type="submit"],
-    .shared-actions select,
-    .shared-actions button {
-        min-height: 32px;
-        padding: 5px 10px;
-        border: 1px solid #d8e1e9;
-        border-radius: 6px;
-    }
-
-    .shared-search input[type="submit"],
-    .shared-actions button {
-        background: #159b96;
-        color: #fff;
-        border-color: #159b96;
-        cursor: pointer;
-    }
-
-    .shared-table {
-        display: block !important;
-        overflow-x: auto;
-        background: #fff;
-        border: 1px solid #e5ebf1;
-        border-radius: 12px;
-        box-shadow: 0 5px 20px rgba(30, 50, 70, 0.05);
-    }
-
-    .shared-table #result_list {
+    .shared-main,
+    .shared-filter-sidebar {
         width: 100%;
-        min-width: 850px;
-        margin: 0;
-        border-collapse: collapse;
-        table-layout: fixed;
-        background: #fff;
+        max-width: 100%;
+        flex-basis: auto;
     }
+}
 
-    .shared-table #result_list th,
-    .shared-table #result_list td {
-        box-sizing: border-box;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-
-    .shared-table #result_list .action-checkbox-column {
-        width: 46px;
-    }
-
-    .shared-table #result_list th:not(.action-checkbox-column),
-    .shared-table #result_list td:not(.action-checkbox-column) {
-        width: auto;
+@media (max-width: 640px) {
+    .shared-list-title {
+        font-size: 20px;
     }
 
     .shared-table #result_list thead th {
-        padding: 14px 16px;
-        background: #e8fbf9;
-        color: #108580;
-        font-size: 12px;
-        text-align: left;
-        white-space: nowrap;
+        font-size: 10px;
+        padding: 10px 3px;
     }
 
+    .shared-table #result_list tbody th,
     .shared-table #result_list tbody td {
-        padding: 14px 16px;
-        color: #596875;
-        border-top: 1px solid #edf0f4;
-        vertical-align: middle;
+        font-size: 11px;
+        padding: 10px 4px;
     }
+}
+/* ==========================================
+   XÓA DẤU CHẤM TRƯỚC BỘ LỌC
+========================================== */
 
-    .shared-table #result_list tbody tr:hover {
-        background: #f8fffe;
-    }
+.shared-filter-sidebar ul,
+.shared-filter-sidebar li {
+    list-style: none !important;
+    list-style-type: none !important;
+    list-style-image: none !important;
+}
 
-    .shared-table #result_list tbody th a,
-    .shared-table #result_list tbody td a {
-        color: #108580;
-        font-weight: 600;
-        text-decoration: none !important;
-    }
+.shared-filter-sidebar ul {
+    margin: 0 !important;
+    padding: 0 !important;
+}
 
-    .paginator {
-        padding: 14px 0;
-    }
+.shared-filter-sidebar li {
+    margin: 4px 0 !important;
+    padding: 0 !important;
+}
+
+.shared-filter-sidebar li::before,
+.shared-filter-sidebar li::marker {
+    content: none !important;
+    display: none !important;
+}
 </style>
 
+<!-- ==========================================
+     TIÊU ĐỀ VÀ NÚT THÊM
+========================================== -->
+
 <div class="shared-list-header">
+
     <div class="shared-list-title">
         {{ cl.opts.verbose_name_plural|capfirst }}
     </div>
-    <a href="{% url cl.opts|admin_urlname:'add' %}" class="shared-add-button">
-        + Thêm {{ cl.opts.verbose_name }}
-    </a>
+
+    {% if has_add_permission %}
+        <a
+            href="{% url cl.opts|admin_urlname:'add' %}"
+            class="shared-add-button"
+        >
+            + Thêm {{ cl.opts.verbose_name }}
+        </a>
+    {% endif %}
+
 </div>
 
-<div class="shared-tools">
-    <div class="shared-search">
-        {% search_form cl %}
+<!-- ==========================================
+     BẢNG TRÁI - BỘ LỌC PHẢI
+========================================== -->
+
+<div class="shared-layout">
+
+    <div class="shared-main">
+
+        <div class="shared-tools">
+
+            <div class="shared-search">
+                {% search_form cl %}
+            </div>
+
+            <form id="changelist-form" method="post">
+                {% csrf_token %}
+
+                {% if action_form and actions_on_top and cl.show_admin_actions %}
+                    <div class="shared-actions">
+                        {% admin_actions %}
+                    </div>
+                {% endif %}
+
+                <div class="shared-table">
+                    {% result_list cl %}
+                </div>
+
+                {% if action_form and actions_on_bottom and cl.show_admin_actions %}
+                    <div class="shared-actions">
+                        {% admin_actions %}
+                    </div>
+                {% endif %}
+
+            </form>
+
+        </div>
+
     </div>
 
-    <form id="changelist-form" method="post">
-        {% csrf_token %}
-        {% if action_form and actions_on_top and cl.show_admin_actions %}
-            <div class="shared-actions">
-                {% admin_actions %}
-            </div>
-        {% endif %}
+    <!-- ======================================
+         BỘ LỌC BÊN PHẢI
+    ====================================== -->
 
-        <div class="shared-table">
-            {% result_list cl %}
-        </div>
-    </form>
+    {% if cl.has_filters %}
+
+        <aside class="shared-filter-sidebar">
+
+            <h2 class="shared-filter-heading">
+                Bộ lọc
+            </h2>
+
+            {% for spec in cl.filter_specs %}
+
+                <div class="shared-filter-group">
+                    {% admin_list_filter cl spec %}
+                </div>
+
+            {% endfor %}
+
+        </aside>
+
+    {% endif %}
+
 </div>
+
 {% endblock %}

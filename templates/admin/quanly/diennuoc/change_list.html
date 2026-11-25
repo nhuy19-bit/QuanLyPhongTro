@@ -1,4 +1,5 @@
 {% extends "admin/change_list.html" %}
+{% load humanize %}
 
 {% block content %}
 
@@ -210,43 +211,43 @@
 
             <div class="electric-info">
                 📅 <strong>Tháng:</strong>
-                {{ dien_nuoc.thang }}
+                {{ dien_nuoc.thang|date:"d/m/Y" }}
             </div>
 
 
             <div class="electric-info">
-                ⚡ <strong>Điện cũ:</strong>
-                {{ dien_nuoc.chi_so_dien_cu }}
+                ⚡ <strong>Điện cũ (kWh):</strong>
+                {{ dien_nuoc.chi_so_dien_cu }} kWh
             </div>
 
 
             <div class="electric-info">
-                ⚡ <strong>Điện mới:</strong>
-                {{ dien_nuoc.chi_so_dien_moi }}
+                ⚡ <strong>Điện mới (kWh):</strong>
+                {{ dien_nuoc.chi_so_dien_moi }} kWh
             </div>
 
 
             <div class="electric-info">
-                💧 <strong>Nước cũ:</strong>
-                {{ dien_nuoc.chi_so_nuoc_cu }}
+                💧 <strong>Nước cũ (m³):</strong>
+                {{ dien_nuoc.chi_so_nuoc_cu }} m³
             </div>
 
 
             <div class="electric-info">
-                💧 <strong>Nước mới:</strong>
-                {{ dien_nuoc.chi_so_nuoc_moi }}
+                💧 <strong>Nước mới (m³):</strong>
+                {{ dien_nuoc.chi_so_nuoc_moi }} m³
             </div>
 
 
             <div class="electric-info">
                 💰 <strong>Tiền điện:</strong>
-                {{ dien_nuoc.tien_dien|floatformat:0 }} VNĐ
+                {{ dien_nuoc.tien_dien|floatformat:0|intcomma }}VNĐ
             </div>
 
 
             <div class="electric-info">
                 💰 <strong>Tiền nước:</strong>
-                {{ dien_nuoc.tien_nuoc|floatformat:0 }} VNĐ
+                {{ dien_nuoc.tien_nuoc|floatformat:0|intcomma }}VNĐ
             </div>
 
 

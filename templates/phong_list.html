@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="vi">
+{% load humanize %}
 <head>
     <meta charset="UTF-8">
     <title>Quản lý phòng</title>
@@ -68,11 +69,11 @@
                         </td>
 
                         <td>
-                            {{ phong.gia_phong }} VNĐ
+                            {{ phong.gia_phong|floatformat:0|intcomma }}VNĐ
                         </td>
 
                         <td>
-                            {{ phong.dien_tich }} m²
+                            {{ phong.dien_tich|floatformat:"-2" }} m²
                         </td>
 
                         <td>
@@ -120,8 +121,8 @@
                     {% endif %}
                     <tr>
                         <td>{{ phong.ten_phong }}</td>
-                        <td>{{ phong.gia_phong }} VNĐ</td>
-                        <td>{{ phong.dien_tich }} m²</td>
+                        <td>{{ phong.gia_phong|floatformat:0|intcomma }}VNĐ</td>
+                        <td>{{ phong.dien_tich|floatformat:"-2" }} m²</td>
                         <td>{{ phong.get_trang_thai_display }}</td>
                         <td>{{ phong.mo_ta|default:"Chưa có mô tả" }}</td>
                         <td>

@@ -16,9 +16,109 @@
 
 {% block userlinks %}
     {% if user.is_active and user.is_staff %}
+        <details class="admin-contract-bell">
+            <summary aria-label="Thông báo hợp đồng sắp hết hạn" title="Thông báo hợp đồng sắp hết hạn">
+                <span aria-hidden="true">🔔</span>
+                {% if so_canh_bao_admin_chua_doc %}
+                    <span class="admin-contract-bell-count">{{ so_canh_bao_admin_chua_doc }}</span>
+                {% endif %}
+            </summary>
+            <div class="admin-contract-bell-menu">
+                <strong>Hợp đồng sắp hết hạn</strong>
+                {% for tb in canh_bao_admin_moi %}
+                    <form method="post" action="{% url 'danh_dau_da_doc_admin' tb.id %}" class="admin-contract-bell-form">
+                        {% csrf_token %}
+                        <button type="submit" class="admin-contract-bell-item{% if not tb.da_doc %} is-unread{% endif %}" title="Đánh dấu đã đọc và xem hợp đồng">
+                            <span>{{ tb.tieu_de }}</span>
+                            <small>{{ tb.noi_dung|truncatechars:110 }}</small>
+                            {% if not tb.da_doc %}<small class="admin-contract-unread-label">● Chưa đọc</small>{% else %}<small class="admin-contract-read-label">✓ Đã đọc</small>{% endif %}
+                        </button>
+                    </form>
+                {% empty %}
+                    <p>Chưa có cảnh báo hợp đồng.</p>
+                {% endfor %}
+            </div>
+        </details>
         <a href="{% url 'admin:password_change' %}">Đổi mật khẩu</a>
     {% endif %}
-    <a href="{% url 'admin:logout' %}">Đăng xuất</a>
+    <form method="post"
+        action="{% url 'admin:logout' %}"
+        class="admin-logout-form">
+        {% csrf_token %}
+        <button type="submit" class="admin-logout-btn">
+            ĐĂNG XUẤT
+        </button>
+    </form>
+{% endblock %}
+
+{% block extrahead %}
+{{ block.super }}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    // Đóng thông báo khi nhấn ra ngoài hoặc nhấn Escape.
+    const adminBell = document.querySelector('.admin-contract-bell');
+    if (adminBell) {
+        document.addEventListener('click', function (event) {
+            if (adminBell.open && !adminBell.contains(event.target)) {
+                adminBell.open = false;
+            }
+        });
+        document.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape' && adminBell.open) {
+                adminBell.open = false;
+                const trigger = adminBell.querySelector('summary');
+                if (trigger) trigger.focus();
+            }
+        });
+    }
+
+    const moneyFields = [
+        'gia_phong',
+        'tien_coc',
+        'tien_phong',
+        'tien_dien',
+        'tien_nuoc',
+        'don_gia_dien',
+        'don_gia_nuoc',
+        'chi_phi_khac',
+        'tien_khac',
+        'tong_tien'
+    ];
+
+    const formatMoney = function (value) {
+        const digits = String(value || '').replace(/[^\d]/g, '');
+        return digits ? Number(digits).toLocaleString('en-US') : '';
+    };
+
+    document.querySelectorAll('input[name]').forEach(function (input) {
+        if (!moneyFields.includes(input.name)) {
+            return;
+        }
+
+        input.type = 'text';
+        input.inputMode = 'numeric';
+        input.value = formatMoney(input.value);
+        input.addEventListener('input', function () {
+            const cursorAtEnd = input.selectionStart === input.value.length;
+            input.value = formatMoney(input.value);
+            if (cursorAtEnd) {
+                input.setSelectionRange(input.value.length, input.value.length);
+            }
+        });
+    });
+
+    document.querySelectorAll('form').forEach(function (form) {
+        form.addEventListener('submit', function () {
+            moneyFields.forEach(function (name) {
+                const input = form.querySelector('input[name="' + name + '"]');
+                if (input) {
+                    input.value = input.value.replace(/,/g, '');
+                }
+            });
+        });
+    });
+});
+</script>
 {% endblock %}
 
 {% block nav-sidebar %}
@@ -43,7 +143,7 @@
 
         <!-- TỔNG QUAN -->
         <a href="{% url 'admin_dashboard' %}"
-            class="sidebar-link {% if request.resolver_match.url_name == 'admin_dashboard' %}active{% endif %}">
+        class="sidebar-link {% if request.resolver_match.url_name == 'admin_dashboard' %}active{% endif %}">
             <span>📊</span>
             <span>Tổng quan</span>
         </a>
@@ -54,48 +154,62 @@
             QUẢN LÝ
         </div>
 
+        <!-- TÀI KHOẢN -->
         <a href="{% url 'admin:quanly_taikhoan_changelist' %}"
-            class="sidebar-link {% if request.resolver_match.url_name == 'quanly_taikhoan_changelist' %}active{% endif %}">
+        class="sidebar-link {% if request.resolver_match.url_name == 'quanly_taikhoan_changelist' or request.resolver_match.url_name == 'quanly_taikhoan_add' or request.resolver_match.url_name == 'quanly_taikhoan_change' %}active{% endif %}">
             <span>👤</span>
             <span>Tài khoản</span>
         </a>
 
+        <!-- PHÒNG -->
         <a href="{% url 'admin:quanly_phong_changelist' %}"
-            class="sidebar-link {% if request.resolver_match.url_name == 'quanly_phong_changelist' %}active{% endif %}">
+        class="sidebar-link {% if request.resolver_match.url_name == 'quanly_phong_changelist' or request.resolver_match.url_name == 'quanly_phong_add' or request.resolver_match.url_name == 'quanly_phong_change' %}active{% endif %}">
             <span>🏠</span>
             <span>Phòng</span>
         </a>
 
         <a href="{% url 'admin:quanly_coso_changelist' %}"
-            class="sidebar-link {% if request.resolver_match.url_name == 'quanly_coso_changelist' %}active{% endif %}">
+            class="sidebar-link {% if request.resolver_match.url_name == 'quanly_coso_changelist' or request.resolver_match.url_name == 'quanly_coso_add' or request.resolver_match.url_name == 'quanly_coso_change' %}active{% endif %}">
             <span>🏢</span>
             <span>Cơ sở</span>
         </a>
 
         <a href="{% url 'admin:quanly_nguoithue_changelist' %}"
-            class="sidebar-link {% if request.resolver_match.url_name == 'quanly_nguoithue_changelist' %}active{% endif %}">
+            class="sidebar-link {% if request.resolver_match.url_name == 'quanly_nguoithue_changelist' or request.resolver_match.url_name == 'quanly_nguoithue_add' or request.resolver_match.url_name == 'quanly_nguoithue_change' %}active{% endif %}">
             <span>👥</span>
             <span>Người thuê</span>
         </a>
 
         <a href="{% url 'admin:quanly_hopdong_changelist' %}"
-            class="sidebar-link {% if request.resolver_match.url_name == 'quanly_hopdong_changelist' %}active{% endif %}">
+            class="sidebar-link {% if request.resolver_match.url_name == 'quanly_hopdong_changelist' or request.resolver_match.url_name == 'quanly_hopdong_add' or request.resolver_match.url_name == 'quanly_hopdong_change' %}active{% endif %}">
             <span>📄</span>
             <span>Hợp đồng</span>
         </a>
 
         <a href="{% url 'admin:quanly_diennuoc_changelist' %}"
-            class="sidebar-link {% if request.resolver_match.url_name == 'quanly_diennuoc_changelist' %}active{% endif %}">
+            class="sidebar-link {% if request.resolver_match.url_name == 'quanly_diennuoc_changelist' or request.resolver_match.url_name == 'quanly_diennuoc_add' or request.resolver_match.url_name == 'quanly_diennuoc_change' %}active{% endif %}">
             <span>💡</span>
             <span>Điện nước</span>
         </a>
 
+        <!-- THANH TOÁN -->
         <a href="{% url 'admin:quanly_thanhtoan_changelist' %}"
-            class="sidebar-link {% if request.resolver_match.url_name == 'quanly_thanhtoan_changelist' %}active{% endif %}">
+        class="sidebar-link {% if request.resolver_match.url_name == 'quanly_thanhtoan_changelist' or request.resolver_match.url_name == 'quanly_thanhtoan_add' or request.resolver_match.url_name == 'quanly_thanhtoan_change' %}active{% endif %}">
             <span>💰</span>
             <span>Thanh toán</span>
         </a>
-
+        
+        <!-- THÔNG BÁO -->
+        <a href="{% url 'admin:quanly_thongbao_changelist' %}"
+        class="sidebar-link {% if request.resolver_match.url_name == 'quanly_thongbao_changelist' or request.resolver_match.url_name == 'quanly_thongbao_add' or request.resolver_match.url_name == 'quanly_thongbao_change' %}active{% endif %}">
+            <span>🔔</span>
+            <span>Thông báo</span>
+        </a>
+        <a href="{% url 'thong_ke' %}"
+        class="sidebar-link {% if request.resolver_match.url_name == 'thong_ke' %}active{% endif %}">
+            <span>📊</span>
+            <span>Thống kê</span>
+        </a>
 
         <!-- HỆ THỐNG -->
         <div class="sidebar-section">
@@ -125,7 +239,67 @@
 {{ block.super }}
 
 <style>
+/* Đồng bộ nút Đăng xuất với Đổi mật khẩu */
+.admin-logout-form {
+    display: inline-flex;
+    align-items: center;
+    margin: 0;
+}
 
+.admin-logout-form .admin-logout-btn {
+    appearance: none;
+    background: transparent !important;
+    color: #ffffff !important;
+    border: 1px solid rgba(255, 255, 255, 0.22) !important;
+    border-radius: 9px !important;
+    padding: 9px 14px !important;
+    font: inherit !important;
+    font-size: 12px !important;
+    font-weight: 500 !important;
+    line-height: 1.2 !important;
+    text-transform: uppercase;
+    cursor: pointer;
+    box-shadow: none !important;
+}
+
+.admin-logout-form .admin-logout-btn:hover {
+    background: rgba(255, 255, 255, 0.12) !important;
+}
+/* Nút đăng xuất Admin */
+.admin-logout-form {
+    display: inline-flex;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+}
+
+.admin-logout-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    border-radius: 9px;
+    color: #ffffff;
+    padding: 10px 14px;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 1.2;
+    cursor: pointer;
+    transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.admin-logout-btn:hover {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.4);
+    color: #ffffff;
+}
+
+.admin-logout-btn:focus-visible {
+    outline: 2px solid #ffffff;
+    outline-offset: 2px;
+}
 #changelist-form #result_list {
     width: 100%;
     background: #ffffff;
@@ -176,14 +350,6 @@ html, body {
 /* =====================================
    HEADER
    ===================================== */
-
-#header {
-    height: 68px;
-    background: linear-gradient(135deg, #0f172a 0%, #1d4ed8 100%);
-    padding: 0 20px;
-    box-sizing: border-box;
-    box-shadow: 0 8px 20px rgba(15, 23, 42, 0.12);
-}
 
 #branding {
     display: flex;
@@ -756,41 +922,57 @@ a.button {
 
     #main {
         margin-left: 210px;
+        width: calc(100% - 210px);
+    }
+
+    #header {
+        width: calc(100% - 210px) !important;
+        margin-left: 210px !important;
     }
 
 }
 
 /* =====================================
-   THANH CHANGE PASSWORD / LOG OUT
+   HEADER VA CAC NUT TAI KHOAN
    ===================================== */
 
 #header {
-    height: 68px !important;
-    margin: 0 !important;
-    margin-left: 240px !important;
+    position: relative !important;
+    display: block !important;
     width: calc(100% - 240px) !important;
-    background: linear-gradient(135deg, #0f172a 0%, #1d4ed8 100%) !important;
+    height: 68px !important;
+    min-height: 68px !important;
+    max-height: 68px !important;
+    margin: 0 0 0 240px !important;
     padding: 0 20px !important;
     box-sizing: border-box !important;
+    flex: 0 0 68px !important;
+    flex-shrink: 0 !important;
+    background: linear-gradient(135deg, #0f172a 0%, #1d4ed8 100%) !important;
     box-shadow: 0 8px 20px rgba(15, 23, 42, 0.12);
+    overflow: visible !important;
+}
+
+#header #branding {
+    display: none !important;
 }
 
 #user-tools {
     position: absolute !important;
-    right: 20px !important;
     top: 0 !important;
+    right: 20px !important;
     height: 68px !important;
     display: flex !important;
     align-items: center !important;
+    gap: 10px;
     margin: 0 !important;
     padding: 0 !important;
     color: white !important;
     white-space: nowrap !important;
-    gap: 10px;
 }
 
 #user-tools a {
-    color: rgba(255,255,255,0.95) !important;
+    color: rgba(255, 255, 255, 0.95) !important;
     text-decoration: none !important;
     padding: 8px 12px;
     border-radius: 8px;
@@ -799,27 +981,8 @@ a.button {
 
 #user-tools a:hover {
     color: white !important;
-    background: rgba(255,255,255,0.08);
+    background: rgba(255, 255, 255, 0.08);
 }
-
-
-/* =====================================
-   USER TOOLS
-   ===================================== */
-
-#user-tools {
-    position: absolute !important;
-    right: 20px !important;
-    top: 0 !important;
-    height: 68px !important;
-    display: flex !important;
-    align-items: center !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    white-space: nowrap !important;
-    gap: 10px;
-}
-
 
 /* =====================================
    KHÔNG ẨN BREADCRUMB
@@ -834,6 +997,176 @@ a.button {
     background: rgba(148, 163, 184, 0.06);
     border-bottom: 1px solid rgba(148, 163, 184, 0.15);
 }
+
+@media (max-width: 650px) {
+    #header {
+        width: 100% !important;
+        margin-left: 0 !important;
+    }
+}
+
+/* =====================================
+   DASHBOARD - MO RONG VA DONG BO THE
+   ===================================== */
+
+body.dashboard #main {
+    width: calc(100% - 240px) !important;
+    margin-left: 240px !important;
+    box-sizing: border-box !important;
+}
+
+body.dashboard #content,
+body.dashboard #content-main {
+    width: 100% !important;
+    max-width: none !important;
+    float: none !important;
+    box-sizing: border-box !important;
+}
+
+body.dashboard #content {
+    padding: 30px 36px 40px !important;
+}
+
+body.dashboard .dashboard-page {
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+}
+
+/* Dong bo cac luoi the cu va moi */
+body.dashboard .dashboard-grid,
+body.dashboard .stats-grid,
+body.dashboard .stats-grid-finance,
+body.dashboard .management-grid {
+    display: grid !important;
+    width: 100% !important;
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    gap: 18px !important;
+    box-sizing: border-box !important;
+}
+
+body.dashboard .dashboard-card,
+body.dashboard .stat-card,
+body.dashboard .management-card {
+    width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+}
+
+/* Cac the tai chinh va quan ly cung co the chia 4 cot */
+@media (max-width: 1100px) {
+    body.dashboard .dashboard-grid,
+    body.dashboard .stats-grid,
+    body.dashboard .stats-grid-finance,
+    body.dashboard .management-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    }
+}
+
+@media (max-width: 650px) {
+    body.dashboard #content {
+        padding: 20px 15px 30px !important;
+    }
+
+    body.dashboard .dashboard-grid,
+    body.dashboard .stats-grid,
+    body.dashboard .stats-grid-finance,
+    body.dashboard .management-grid {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+
+/* CHUÔNG THÔNG BÁO ADMIN - XANH NAVY / XANH DƯƠNG */
+#user-tools .admin-contract-bell {
+    display: inline-flex; position: relative; align-items: center;
+    margin: 0 10px 0 0; vertical-align: middle; white-space: normal;
+}
+#user-tools .admin-contract-bell summary {
+    display: inline-flex; align-items: center; justify-content: center;
+    position: relative; width: 43px; height: 43px; padding: 0;
+    cursor: pointer; list-style: none; border-radius: 50%;
+    font-size: 23px; line-height: 1; box-sizing: border-box;
+    border: 1px solid rgba(255,255,255,.35);
+    background: rgba(255,255,255,.08);
+    transition: background .2s, box-shadow .2s;
+}
+#user-tools .admin-contract-bell summary::-webkit-details-marker { display: none; }
+#user-tools .admin-contract-bell summary::marker { content: ''; }
+#user-tools .admin-contract-bell summary:hover,
+#user-tools .admin-contract-bell[open] summary {
+    background: rgba(255,255,255,.17);
+    box-shadow: 0 0 0 3px rgba(147,197,253,.24);
+}
+#user-tools .admin-contract-bell-count {
+    position: absolute; top: -5px; right: -7px;
+    min-width: 19px; height: 19px; padding: 0 5px;
+    display: flex; align-items: center; justify-content: center;
+    box-sizing: border-box; border-radius: 999px;
+    background: #ef4444; color: #fff; border: 2px solid #173b8e;
+    font-size: 11px; line-height: 1; font-weight: 800;
+}
+#user-tools .admin-contract-bell-menu {
+    position: absolute; top: calc(100% + 14px); right: -10px;
+    width: 395px; max-width: calc(100vw - 30px);
+    max-height: min(460px, 70vh); overflow-x: hidden; overflow-y: auto;
+    box-sizing: border-box; padding: 0;
+    background: #fff; color: #0f172a;
+    border: 1px solid #dbeafe; border-radius: 16px;
+    box-shadow: 0 18px 46px rgba(15,23,42,.23);
+    text-align: left; white-space: normal; z-index: 3000;
+}
+#user-tools .admin-contract-bell-menu > strong {
+    display: block; padding: 17px 20px; margin: 0;
+    background: #eff6ff; border-bottom: 1px solid #dbeafe;
+    color: #1e3a8a; font-size: 15px; line-height: 1.45;
+    font-weight: 800; letter-spacing: .1px; text-transform: none;
+}
+#user-tools .admin-contract-bell-item {
+    display: block; margin: 12px; padding: 14px 15px;
+    width: calc(100% - 24px); box-sizing: border-box;
+    border: 1px solid #e2e8f0; border-left: 4px solid #93c5fd;
+    border-radius: 11px; background: #f8fafc;
+    color: #0f172a !important; text-decoration: none !important;
+    text-transform: none !important; white-space: normal !important;
+    overflow-wrap: anywhere; transition: background .2s, border-color .2s;
+}
+#user-tools .admin-contract-bell-item.is-unread {
+    background: #eff6ff; border-color: #bfdbfe; border-left-color: #2563eb;
+}
+#user-tools .admin-contract-bell-item:hover {
+    background: #dbeafe !important; border-color: #93c5fd;
+}
+#user-tools .admin-contract-bell-item span {
+    display: block; color: #172554 !important; font-size: 14px;
+    font-weight: 750; line-height: 1.5; white-space: normal;
+}
+#user-tools .admin-contract-bell-item small {
+    display: block; margin-top: 7px; color: #475569 !important;
+    font-size: 13px; font-weight: 400; line-height: 1.6;
+    white-space: normal; overflow-wrap: anywhere;
+}
+#user-tools .admin-contract-bell-item .admin-contract-unread-label {
+    color: #1d4ed8 !important; font-size: 12px; font-weight: 750;
+}
+#user-tools .admin-contract-bell-menu p {
+    margin: 0; padding: 22px 18px; text-align: center;
+    color: #64748b; font-size: 13px; white-space: normal;
+}
+@media (max-width: 480px) {
+    #user-tools .admin-contract-bell-menu {
+        width: min(350px, calc(100vw - 24px)); right: -55px;
+    }
+}
+/* Nút thông báo dùng POST để cập nhật trạng thái đã đọc an toàn */
+#user-tools .admin-contract-bell-form { margin: 0 !important; padding: 0 !important; width: 100%; }
+#user-tools .admin-contract-bell-form .admin-contract-bell-item {
+    display: block !important; width: 100% !important; text-align: left !important;
+    cursor: pointer !important; font-family: inherit !important; appearance: none;
+    font-weight: inherit !important; line-height: inherit !important;
+}
+#user-tools .admin-contract-read-label { color: #64748b !important; font-weight: 600 !important; }
 </style>
 
 {% endblock %}

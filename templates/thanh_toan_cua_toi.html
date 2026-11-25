@@ -1,383 +1,511 @@
 <!DOCTYPE html>
+
 <html lang="vi">
+
 <head>
+
     <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
     <title>Thanh toán của tôi - Quản lý phòng trọ</title>
 
-    {% load humanize %}
+    {% load humanize static %}
 
-    <link
-        href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap"
-        rel="stylesheet"
-    >
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
     <style>
-        * {
-            box-sizing: border-box;
+
+        * { box-sizing: border-box; }
+
+        body { margin:0; background:#f8fafc; color:#0f172a; font-family:'Manrope',sans-serif; }
+
+        .topbar { background:linear-gradient(135deg,#0f172a,#1d4ed8); box-shadow:0 8px 20px rgba(15,23,42,.12); }
+
+        .topbar-inner,.page { width:min(1160px,calc(100% - 40px)); margin:0 auto; }
+
+        .topbar-inner { min-height:76px; display:flex; align-items:center; justify-content:space-between; gap:16px; }
+
+        .brand,.back { color:#fff; text-decoration:none; font-weight:800; }
+
+        .brand { font-size:18px; } .back { font-size:13px; }
+
+        .page { padding:42px 0 64px; }
+
+        .eyebrow { color:#1d4ed8; font-size:11px; font-weight:800; letter-spacing:.09em; text-transform:uppercase; }
+
+        h1 { margin:8px 0 10px; font-size:clamp(28px,4vw,36px); font-weight:800; }
+
+        .subtitle { margin:0 0 28px; color:#64748b; font-size:14px; line-height:1.7; }
+
+        .room-info,.panel { margin-bottom:24px; overflow:hidden; background:#fff; border:1px solid #e2e8f0; border-radius:16px; box-shadow:0 10px 28px rgba(28,53,84,.05); }
+
+        .room-info { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:24px; padding:24px 28px; border-color:#dce5ef; border-radius:18px; }
+
+        .room-info small { display:block; margin-bottom:8px; color:#526783; font-size:12px; }
+
+        .room-info h3 { margin:0; font-size:16px; font-weight:600; overflow-wrap:anywhere; }
+
+        .panel-heading { padding:22px 26px; border-bottom:1px solid #e8edf4; }
+
+        .panel-heading h2 { margin:0 0 5px; font-size:19px; }
+
+        .panel-heading p { margin:0; color:#64748b; font-size:13px; line-height:1.6; }
+
+        .table-wrap { overflow-x:auto; }
+
+        table { width:100%; min-width:950px; border-collapse:collapse; }
+
+        th,td { padding:15px 18px; text-align:left; border-bottom:1px solid #e8edf4; font-size:13px; white-space:nowrap; }
+
+        th { background:#f8fafc; color:#475569; font-size:11px; font-weight:800; text-transform:uppercase; }
+
+        tbody tr:last-child td { border-bottom:0; }
+
+        tbody tr:not(.payment-detail):hover { background:#f8fbff; }
+
+        .money { color:#1d4ed8; font-weight:800; }
+
+        .badge { display:inline-block; padding:7px 10px; border-radius:7px; font-size:11px; font-weight:800; }
+
+        .paid { background:#e5f7f0; color:#087f5b; }
+
+        .unpaid { background:#fff1e6; color:#b45309; }
+
+        .waiting { background:#dbeafe; color:#1d4ed8; }
+
+        .additional { background:#fef3c7; color:#92400e; }
+
+        .empty { padding:28px 20px; color:#64748b; text-align:center; font-size:14px; line-height:1.7; }
+
+        .notice { margin-bottom:16px; padding:16px 20px; border:1px solid #bfdbfe; border-radius:12px; background:#eff6ff; color:#1e40af; line-height:1.7; }
+
+        .action-btn { border:0; border-radius:8px; padding:9px 13px; background:#1d4ed8; color:#fff; font:700 12px 'Manrope',sans-serif; cursor:pointer; }
+
+        .action-btn:hover { background:#1e40af; }
+
+        .action-btn:focus-visible { outline:3px solid #93c5fd; outline-offset:2px; }
+
+        .payment-modal { position:fixed; inset:0; z-index:1000; display:none; align-items:center; justify-content:center; padding:14px; background:rgba(15,23,42,.65); }
+
+        .payment-modal.is-open { display:flex; }
+
+        .modal-dialog { width:min(700px,100%); max-height:calc(100dvh - 28px); background:#fff; border-radius:18px; box-shadow:0 24px 70px rgba(15,23,42,.25); overflow:hidden; }
+
+        .modal-header { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:17px 22px; border-bottom:1px solid #e2e8f0; }
+
+        .modal-header h2 { margin:0; font-size:18px; }
+
+        .modal-close { border:0; border-radius:9px; padding:8px 12px; background:#eff6ff; color:#1d4ed8; font-weight:800; cursor:pointer; }
+
+        .modal-body { padding:14px 24px 18px; }
+
+        .payment-layout { display:grid; grid-template-columns:230px minmax(0,1fr); gap:24px; align-items:center; }
+
+        .qr-image { display:block; width:100%; max-width:230px; height:auto; object-fit:contain; border:1px solid #e2e8f0; border-radius:12px; }
+
+        .payment-info { display:grid; gap:14px; min-width:0; }
+
+        .payment-info small { display:block; margin-bottom:5px; color:#64748b; font-size:12px; }
+
+        .payment-info strong { display:block; font-size:15px; overflow-wrap:anywhere; }
+
+        .payment-info .modal-amount { color:#1d4ed8; font-size:23px; font-weight:800; }
+
+        .payment-upload { margin-top:12px; padding-top:12px; border-top:1px solid #e2e8f0; }
+
+        .payment-upload label { display:block; font-weight:700; font-size:13px; margin-bottom:8px; }
+
+        .upload-actions { display:flex; gap:12px; align-items:center; }
+
+        .file-input { min-width:0; flex:1; width:100%; padding:9px; border:1px solid #cbd5e1; border-radius:9px; font:inherit; font-size:12px; }
+
+        .note { color:#64748b; font-size:11px; line-height:1.5; margin:9px 0 0; }
+
+        .reason { color:#92400e; font-size:12px; white-space:normal; line-height:1.5; }
+
+        body.modal-open { overflow:hidden; }
+
+        @media(max-width:640px) {
+
+            .modal-header { padding:13px 16px; }
+
+            .modal-header h2 { font-size:16px; }
+
+            .modal-body { padding:14px 16px 16px; }
+
+            .payment-layout { grid-template-columns: minmax(0, 42%) minmax(0, 1fr); gap:12px; }
+
+            .payment-info { gap:8px; }
+
+            .payment-info strong { font-size:12px; }
+
+            .payment-info .modal-amount { font-size:17px; }
+
+            .upload-actions { flex-direction:column; align-items:stretch; }
+
+            .qr-image { max-width:100%; }
+
         }
 
-        body {
-            margin: 0;
-            background: #f8fafc;
-            color: #0f172a;
-            font-family: 'Manrope', sans-serif;
+        @media(max-width:760px) { .room-info { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+
+        @media(max-width:640px) {
+
+            .topbar-inner,.page { width:calc(100% - 28px); }
+
+            .topbar-inner { min-height:66px; flex-wrap:wrap; padding:14px 0; }
+
+            .brand { font-size:16px; } .back { font-size:12px; }
+
+            .page { padding-top:30px; } .room-info { grid-template-columns:1fr; padding:20px; }
+
+            .panel-heading { padding:20px; } th,td { padding:13px 14px; }
+
         }
 
-        .topbar {
-            background: linear-gradient(135deg, #0f172a, #1d4ed8);
-            box-shadow: 0 8px 20px rgba(15, 23, 42, 0.12);
+    
+        /* Đồng bộ kiểu chữ và trường thông tin với Hợp đồng của tôi */
+        .page h1 { letter-spacing:-.03em; }
+        .subtitle { font-size:15px; }
+        .payment-info { gap:0; align-self:stretch; }
+        .payment-info > div { padding:10px 0; border-bottom:1px solid #e2e8f0; }
+        .payment-info > div:last-child { border-bottom:0; }
+        .payment-info small { font-size:11px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; margin-bottom:5px; }
+        .payment-info strong { font-size:15px; line-height:1.5; font-weight:800; }
+        .payment-info .modal-amount { font-size:21px; }
+        .modal-dialog { width:min(700px,calc(100vw - 28px)); }
+        .payment-layout { grid-template-columns:220px minmax(0,1fr); gap:22px; }
+        .payment-layout > * { min-width:0; }
+        .payment-layout .qr-image { width:220px; max-width:100%; height:auto; max-height:290px; object-fit:contain; position:static; }
+        .payment-upload { margin-top:14px; }
+        @media(max-width:640px) {
+            .payment-layout { grid-template-columns:minmax(0,42%) minmax(0,1fr); gap:12px; }
+            .payment-layout .qr-image { width:100%; max-height:240px; }
+            .payment-info > div { padding:6px 0; }
+            .payment-info strong { font-size:12px; }
+            .payment-info .modal-amount { font-size:16px; }
+        }
+        @media(max-height:580px) {
+            .modal-dialog { overflow-y:auto; }
         }
 
-        .topbar-inner,
-        .page {
-            width: min(1160px, calc(100% - 40px));
-            margin: 0 auto;
-        }
-
-        .topbar-inner {
-            min-height: 76px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 16px;
-        }
-
-        .brand,
-        .back {
-            color: white;
-            text-decoration: none;
-            font-weight: 800;
-        }
-
-        .brand {
-            font-size: 18px;
-        }
-
-        .back {
-            font-size: 13px;
-        }
-
-        .page {
-            padding: 42px 0 64px;
-        }
-
-        .eyebrow {
-            color: #1d4ed8;
-            font-size: 11px;
-            font-weight: 800;
-            letter-spacing: 0.09em;
-            text-transform: uppercase;
-        }
-
-        h1 {
-            margin: 8px 0 10px;
-            font-size: clamp(28px, 4vw, 36px);
-            font-weight: 800;
-        }
-
-        .subtitle {
-            margin: 0 0 28px;
-            color: #64748b;
-            font-size: 14px;
-            line-height: 1.7;
-        }
-
-        .room-info,
-        .panel {
-            margin-bottom: 24px;
-            overflow: hidden;
-            background: white;
-            border: 1px solid #e2e8f0;
-            border-radius: 16px;
-            box-shadow: 0 10px 28px rgba(28, 53, 84, 0.05);
-        }
-
-        .room-info {
-            display: grid;
-            grid-template-columns: repeat(3, minmax(0, 1fr));
-            gap: 24px;
-            padding: 24px 28px;
-            border-color: #dce5ef;
-            border-radius: 18px;
-        }
-
-        .room-info small {
-            display: block;
-            margin-bottom: 8px;
-            color: #526783;
-            font-size: 12px;
-        }
-
-        .room-info h3 {
-            margin: 0;
-            font-size: 16px;
-            font-weight: 600;
-            overflow-wrap: anywhere;
-        }
-
-        .panel-heading {
-            padding: 22px 26px;
-            border-bottom: 1px solid #e8edf4;
-        }
-
-        .panel-heading h2 {
-            margin: 0 0 5px;
-            font-size: 19px;
-        }
-
-        .panel-heading p {
-            margin: 0;
-            color: #64748b;
-            font-size: 13px;
-            line-height: 1.6;
-        }
-
-        .table-wrap {
-            overflow-x: auto;
-        }
-
-        table {
-            width: 100%;
-            min-width: 850px;
-            border-collapse: collapse;
-        }
-
-        th,
-        td {
-            padding: 15px 18px;
-            text-align: left;
-            border-bottom: 1px solid #e8edf4;
-            font-size: 13px;
-            white-space: nowrap;
-        }
-
-        th {
-            background: #f8fafc;
-            color: #475569;
-            font-size: 11px;
-            font-weight: 800;
-            text-transform: uppercase;
-        }
-
-        tbody tr:last-child td {
-            border-bottom: 0;
-        }
-
-        tbody tr:hover {
-            background: #f8fbff;
-        }
-
-        .money {
-            color: #1d4ed8;
-            font-weight: 800;
-        }
-
-        .badge {
-            display: inline-block;
-            padding: 7px 10px;
-            border-radius: 7px;
-            font-size: 11px;
-            font-weight: 800;
-        }
-
-        .paid {
-            background: #e5f7f0;
-            color: #087f5b;
-        }
-
-        .unpaid {
-            background: #fff1e6;
-            color: #b45309;
-        }
-
-        .empty {
-            padding: 28px 20px;
-            color: #64748b;
-            text-align: center;
-            font-size: 14px;
-            line-height: 1.7;
-        }
-
-        .notice {
-            padding: 22px 24px;
-            border: 1px solid #bfdbfe;
-            border-radius: 12px;
-            background: #eff6ff;
-            color: #1e40af;
-            line-height: 1.7;
-        }
-
-        @media (max-width: 760px) {
-            .room-info {
-                grid-template-columns: repeat(2, minmax(0, 1fr));
-            }
-        }
-
-        @media (max-width: 640px) {
-            .topbar-inner,
-            .page {
-                width: calc(100% - 28px);
-            }
-
-            .topbar-inner {
-                min-height: 66px;
-                flex-wrap: wrap;
-                padding: 14px 0;
-            }
-
-            .brand {
-                font-size: 16px;
-            }
-
-            .back {
-                font-size: 12px;
-            }
-
-            .page {
-                padding-top: 30px;
-            }
-
-            .room-info {
-                grid-template-columns: 1fr;
-                padding: 20px;
-            }
-
-            .panel-heading {
-                padding: 20px;
-            }
-
-            th,
-            td {
-                padding: 13px 14px;
-            }
-        }
     </style>
+
 </head>
 
 <body>
-    <header class="topbar">
-        <div class="topbar-inner">
-            <a class="brand" href="{% url 'dashboard' %}">
-                ⌂ Quản lý phòng trọ
-            </a>
 
-            <a class="back" href="{% url 'dashboard' %}">
-                ← Về tổng quan
-            </a>
-        </div>
-    </header>
+<header class="topbar">
 
-    <main class="page">
-        <div class="eyebrow">Thông tin chi phí</div>
+    <div class="topbar-inner">
 
-        <h1>Thanh toán của tôi</h1>
+        <a class="brand" href="{% url 'dashboard' %}">⌂ Quản lý phòng trọ</a>
 
-        <p class="subtitle">
-            Theo dõi tiền phòng, chi phí điện nước và tình trạng thanh toán
-            theo từng tháng.
-        </p>
+        <a class="back" href="{% url 'dashboard' %}">← Về tổng quan</a>
 
-        {% if error %}
-            <div class="notice">
-                {{ error }}
+    </div>
+
+</header>
+
+<main class="page">
+
+    <div class="eyebrow">Thông tin chi phí</div>
+
+    <h1>Thanh toán của tôi</h1>
+
+    <p class="subtitle">Theo dõi tiền phòng, chi phí điện nước và tình trạng thanh toán theo từng tháng.</p>
+
+    {% if messages %}
+
+        {% for message in messages %}
+
+            <div class="notice" role="status">{{ message }}</div>
+
+        {% endfor %}
+
+    {% endif %}
+
+    {% if error %}
+
+        <div class="notice">{{ error }}</div>
+
+    {% else %}
+
+        <section class="room-info">
+
+            <div>
+
+                <small>Phòng đang thuê</small>
+
+                <h3>{% if danh_sach_thanh_toan %}{{ danh_sach_thanh_toan.0.phong.ten_phong|default:"Chưa cập nhật" }}{% else %}Chưa cập nhật{% endif %}</h3>
+
             </div>
-        {% else %}
-            <section class="room-info">
-                <div>
-                    <small>Phòng đang thuê</small>
-                    <h3>
-                        {% if danh_sach_thanh_toan %}
-                            {{ danh_sach_thanh_toan.0.phong.ten_phong|default:"Chưa cập nhật" }}
-                        {% else %}
-                            Chưa cập nhật
-                        {% endif %}
-                    </h3>
-                </div>
 
-                <div>
-                    <small>Cơ sở</small>
-                    <h3>
-                        {% if danh_sach_thanh_toan %}
-                            {{ danh_sach_thanh_toan.0.phong.co_so.ten_co_so|default:"Chưa cập nhật" }}
-                        {% else %}
-                            Chưa cập nhật
-                        {% endif %}
-                    </h3>
-                </div>
+            <div>
 
-                <div>
-                    <small>Giá thuê phòng</small>
-                    <h3>
-                        {% if danh_sach_thanh_toan %}
-                            {{ danh_sach_thanh_toan.0.tien_phong|floatformat:0|intcomma }} VNĐ
-                        {% else %}
-                            Chưa cập nhật
-                        {% endif %}
-                    </h3>
-                </div>
-            </section>
+                <small>Cơ sở</small>
 
-            <section class="panel">
-                <div class="panel-heading">
-                    <h2>Lịch sử thanh toán</h2>
-                    <p>
-                        Danh sách chi phí và trạng thái thanh toán được ghi nhận
-                        theo từng tháng.
-                    </p>
-                </div>
+                <h3>{% if danh_sach_thanh_toan %}{{ danh_sach_thanh_toan.0.phong.co_so.ten_co_so|default:"Chưa cập nhật" }}{% else %}Chưa cập nhật{% endif %}</h3>
 
-                {% if danh_sach_thanh_toan %}
-                    <div class="table-wrap">
-                        <table>
-                            <thead>
+            </div>
+
+            <div>
+
+                <small>Giá thuê phòng</small>
+
+                <h3>{% if danh_sach_thanh_toan %}{{ danh_sach_thanh_toan.0.tien_phong|floatformat:0|intcomma }} VNĐ{% else %}Chưa cập nhật{% endif %}</h3>
+
+            </div>
+
+        </section>
+
+        <section class="panel">
+
+            <div class="panel-heading">
+
+                <h2>Lịch sử thanh toán</h2>
+
+                <p>Danh sách chi phí và trạng thái thanh toán được ghi nhận theo từng tháng.</p>
+
+            </div>
+
+            {% if danh_sach_thanh_toan %}
+
+                <div class="table-wrap">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+
+                                <th>Tháng</th><th>Phòng</th><th>Tiền phòng</th><th>Tiền điện</th>
+
+                                <th>Tiền nước</th><th>Chi phí khác</th><th>Tổng tiền</th><th>Trạng thái / Thao tác</th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            {% for tt in danh_sach_thanh_toan %}
+
                                 <tr>
-                                    <th>Tháng</th>
-                                    <th>Phòng</th>
-                                    <th>Tiền phòng</th>
-                                    <th>Tiền điện</th>
-                                    <th>Tiền nước</th>
-                                    <th>Chi phí khác</th>
-                                    <th>Tổng tiền</th>
-                                    <th>Trạng thái</th>
-                                </tr>
-                            </thead>
 
-                            <tbody>
-                                {% for tt in danh_sach_thanh_toan %}
-                                    <tr>
-                                        <td>{{ tt.thang|date:"m/Y" }}</td>
-                                        <td>{{ tt.phong.ten_phong|default:"—" }}</td>
-                                        <td>{{ tt.tien_phong|intcomma }} VNĐ</td>
-                                        <td>{{ tt.tien_dien|intcomma }} VNĐ</td>
-                                        <td>{{ tt.tien_nuoc|intcomma }} VNĐ</td>
-                                        <td>{{ tt.tien_khac|intcomma }} VNĐ</td>
-                                        <td class="money">
-                                            {{ tt.tong_tien|intcomma }} VNĐ
-                                        </td>
-                                        <td>
-                                            {% if tt.trang_thai == 'da_thanh_toan' %}
-                                                <span class="badge paid">
-                                                    Đã thanh toán
-                                                </span>
-                                            {% else %}
-                                                <span class="badge unpaid">
-                                                    Chưa thanh toán
-                                                </span>
-                                            {% endif %}
-                                        </td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                {% else %}
-                    <div class="empty">
-                        Chưa có thông tin thanh toán được cập nhật.
-                    </div>
-                {% endif %}
-            </section>
-        {% endif %}
-    </main>
+                                    <td>{{ tt.thang|date:"d/m/Y" }}</td>
+
+                                    <td>{{ tt.phong.ten_phong|default:"—" }}</td>
+
+                                    <td>{{ tt.tien_phong|intcomma }} VNĐ</td>
+
+                                    <td>{{ tt.tien_dien|intcomma }} VNĐ</td>
+
+                                    <td>{{ tt.tien_nuoc|intcomma }} VNĐ</td>
+
+                                    <td>{{ tt.tien_khac|intcomma }} VNĐ</td>
+
+                                    <td class="money">{{ tt.tong_tien|intcomma }} VNĐ</td>
+
+                                    <td>
+
+                                        {% if tt.trang_thai == 'da_thanh_toan' %}
+
+                                            <span class="badge paid">Đã thanh toán</span>
+
+                                        {% elif tt.trang_thai == 'cho_xac_nhan' %}
+
+                                            <span class="badge waiting">Chờ Admin xác nhận</span>
+
+                                        {% elif tt.trang_thai == 'yeu_cau_bo_sung' %}
+
+                                            <span class="badge additional">Yêu cầu bổ sung</span>
+
+                                            {% if tt.ly_do_bo_sung %}<div class="reason">{{ tt.ly_do_bo_sung }}</div>{% endif %}
+
+                                            <div style="margin-top:10px;">
+
+                                                <button class="action-btn" type="button" aria-haspopup="dialog" onclick="openPayment('payment-{{ tt.pk }}')">Thanh toán bổ sung</button>
+
+                                            </div>
+
+                                        {% else %}
+
+                                            <button class="action-btn" type="button" aria-haspopup="dialog" onclick="openPayment('payment-{{ tt.pk }}')">Chưa thanh toán</button>
+
+                                        {% endif %}
+
+                                    </td>
+
+                                </tr>
+
+{% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+                {% for tt in danh_sach_thanh_toan %}
+
+                                {% if tt.trang_thai == 'chua_thanh_toan' or tt.trang_thai == 'yeu_cau_bo_sung' %}
+
+                                <div class="payment-modal" id="payment-{{ tt.pk }}" role="dialog" aria-modal="true" aria-labelledby="payment-title-{{ tt.pk }}" aria-hidden="true" onclick="backdropClose(event, this)">
+
+                                    <div class="modal-dialog" tabindex="-1">
+
+                                        <div class="modal-header">
+
+                                            <h2 id="payment-title-{{ tt.pk }}">Thanh toán phòng {{ tt.phong.ten_phong }}</h2>
+
+                                            <button class="modal-close" type="button" onclick="closePayment()">Đóng ×</button>
+
+                                        </div>
+
+                                        <div class="modal-body">
+
+                                            <div class="payment-layout">
+
+                                                <img class="qr-image"
+
+                                                    src="{% static 'admin/quanly/thanhtoan/images/qr_thanh_toan.png' %}?v=2"
+
+                                                    alt="Mã QR MB Bank"
+
+                                                >
+
+                                                <div class="payment-info">
+
+                                                    <div><small>Tên người nhận</small><strong>ĐẶNG THỊ NHƯ Ý</strong></div>
+
+                                                    <div><small>Ngân hàng</small><strong>MB Bank (Quân đội)</strong></div>
+
+                                                    <div><small>Số tài khoản</small><strong>0898314070</strong></div>
+
+                                                    <div>
+
+                                                        <small>{% if tt.trang_thai == 'yeu_cau_bo_sung' %}Số tiền còn thiếu{% else %}Tổng tiền thanh toán{% endif %}</small>
+
+                                                        <strong class="modal-amount">{% if tt.trang_thai == 'yeu_cau_bo_sung' %}{{ tt.so_tien_con_thieu|default:"Cần xác nhận"|intcomma }}{% else %}{{ tt.tong_tien|intcomma }}{% endif %} VNĐ</strong>
+
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
+
+                                            <form class="payment-upload" method="post" enctype="multipart/form-data" action="{% url 'gui_hoa_don_thanh_toan' tt.pk %}">
+
+                                                {% csrf_token %}
+
+                                                <label for="hoa-don-{{ tt.pk }}">Chọn ảnh hoặc PDF hóa đơn chuyển khoản</label>
+
+                                                <div class="upload-actions">
+
+                                                    <input class="file-input" id="hoa-don-{{ tt.pk }}" type="file" name="hoa_don" accept=".jpg,.jpeg,.png,.pdf" required>
+
+                                                    <button class="action-btn" type="submit">Gửi hóa đơn</button>
+
+                                                </div>
+
+                                                <p class="note">Tối đa 5 MB. Vui lòng kiểm tra người nhận và số tiền trước khi chuyển khoản. Admin sẽ xác nhận sau khi đối chiếu.</p>
+
+                                            </form>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                                {% endif %}
+
+                {% endfor %}
+
+            {% else %}
+
+                <div class="empty">Chưa có thông tin thanh toán được cập nhật.</div>
+
+            {% endif %}
+
+        </section>
+
+    {% endif %}
+
+</main>
+
+<script>
+
+    let activePayment = null;
+
+    let previousFocus = null;
+
+    function openPayment(id) {
+
+        const modal = document.getElementById(id);
+
+        if (!modal) return;
+
+        previousFocus = document.activeElement;
+
+        activePayment = modal;
+
+        modal.classList.add('is-open');
+
+        modal.setAttribute('aria-hidden', 'false');
+
+        document.body.classList.add('modal-open');
+
+        modal.querySelector('.modal-close').focus();
+
+    }
+
+    function closePayment() {
+
+        if (!activePayment) return;
+
+        activePayment.classList.remove('is-open');
+
+        activePayment.setAttribute('aria-hidden', 'true');
+
+        document.body.classList.remove('modal-open');
+
+        activePayment = null;
+
+        if (previousFocus) previousFocus.focus();
+
+    }
+
+    function backdropClose(event, modal) {
+
+        if (event.target === modal) closePayment();
+
+    }
+
+    document.addEventListener('keydown', function(event) {
+
+        if (event.key === 'Escape' && activePayment) closePayment();
+
+        if (event.key === 'Tab' && activePayment) {
+
+            const items = Array.from(activePayment.querySelectorAll('button, input, a[href]')).filter(el => !el.disabled);
+
+            if (!items.length) return;
+
+            const first = items[0], last = items[items.length - 1];
+
+            if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+
+            else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+
+        }
+
+    });
+
+</script>
+
 </body>
+
 </html>

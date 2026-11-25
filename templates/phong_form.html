@@ -104,11 +104,12 @@
                             </label>
 
                             <input
-                                type="number"
+                                type="text"
                                 name="gia_phong"
                                 class="form-control"
                                 value="{{ phong.gia_phong|default:'' }}"
-                                placeholder="Ví dụ: 3000000"
+                                inputmode="numeric"
+                                placeholder="Ví dụ: 3,000,000"
                                 required
                             >
 
@@ -238,5 +239,29 @@
 </div>
 
 
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const input = document.querySelector('input[name="gia_phong"]');
+    const form = input ? input.form : null;
+    if (!input || !form) {
+        return;
+    }
+
+    const formatMoney = function (value) {
+        const digits = String(value || '').replace(/[^\d]/g, '');
+        return digits ? Number(digits).toLocaleString('en-US') : '';
+    };
+
+    input.type = 'text';
+    input.inputMode = 'numeric';
+    input.value = formatMoney(input.value);
+    input.addEventListener('input', function () {
+        input.value = formatMoney(input.value);
+    });
+    form.addEventListener('submit', function () {
+        input.value = input.value.replace(/,/g, '');
+    });
+});
+</script>
 </body>
 </html>

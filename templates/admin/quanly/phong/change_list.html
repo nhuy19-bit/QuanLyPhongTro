@@ -1,4 +1,5 @@
 {% extends "admin/change_list.html" %}
+{% load humanize %}
 
 {% block content %}
 
@@ -283,11 +284,11 @@
 
                 <div class="room-info">
                     📐 Diện tích:
-                    {{ phong.dien_tich }} m²
+                    {{ phong.dien_tich|floatformat:"-2" }} m²
                 </div>
 
                 <div class="room-price">
-                    💰 {{ phong.gia_phong|floatformat:0 }} VNĐ
+                    💰 {{ phong.gia_phong|floatformat:0|intcomma }}VNĐ
                 </div>
 
                 {% if phong.mo_ta %}

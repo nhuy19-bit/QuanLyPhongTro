@@ -19,6 +19,9 @@ from django.urls import path, re_path
 from quanly import views
 from quanly.views import hopdong_pdf
 
+from django.conf import settings
+from django.conf.urls.static import static
+
 from quanly.views import (
     home,
     dang_nhap,
@@ -30,10 +33,18 @@ from quanly.views import (
     hop_dong_cua_toi,
     dien_nuoc_cua_toi,
     thanh_toan_cua_toi,
+    thong_bao_cua_toi,
+    danh_dau_thong_bao_da_doc,
 )
 
 
 urlpatterns = [
+    path(
+        'admin/thong-bao/<int:thong_bao_id>/da-doc/',
+        views.danh_dau_da_doc_admin,
+        name='danh_dau_da_doc_admin',
+    ),
+
     path(
     'admin/quanly/hopdong/<int:hopdong_id>/pdf/',
     hopdong_pdf,
@@ -41,6 +52,13 @@ urlpatterns = [
     ),
 
     re_path(r'^admin/$', admin_dashboard, name='admin_dashboard'),
+
+    path(
+        'admin/thong-ke/',
+        views.thong_ke,
+        name='thong_ke'
+    ),
+
     path('admin/', admin.site.urls),
 
     path(
@@ -74,6 +92,12 @@ urlpatterns = [
     ),
 
     path(
+        'hop-dong-cua-toi/<int:hopdong_id>/pdf/',
+        hopdong_pdf,
+        name='hopdong_pdf_nguoi_thue',
+    ),
+
+    path(
         'hop-dong-cua-toi/',
         hop_dong_cua_toi,
         name='hop_dong_cua_toi'
@@ -91,6 +115,12 @@ urlpatterns = [
         name='thanh_toan_cua_toi'
     ),
 
+    path(
+        'thanh-toan/<int:thanh_toan_id>/gui-hoa-don/',
+        views.gui_hoa_don_thanh_toan,
+        name='gui_hoa_don_thanh_toan'
+    ),
+
     path('', home, name='home'),
 
     path('dang-nhap/', dang_nhap, name='login'),
@@ -98,4 +128,27 @@ urlpatterns = [
     path('dang-xuat/', dang_xuat, name='logout'),
 
     path('dashboard/', dashboard, name='dashboard'),
+
+    path(
+        'thong-bao-cua-toi/',
+        thong_bao_cua_toi,
+        name='thong_bao_cua_toi'
+    ),
+
+    path(
+        'thong-bao/<int:thong_bao_id>/da-doc/',
+        danh_dau_thong_bao_da_doc,
+        name='danh_dau_thong_bao_da_doc'
+    ),
+
+    path(
+        'thong-tin-ca-nhan/',
+        views.thong_tin_ca_nhan,
+        name='thong_tin_ca_nhan'
+    ),
 ]
+if settings.DEBUG:
+    urlpatterns += static(
+        settings.MEDIA_URL,
+        document_root=settings.MEDIA_ROOT
+    )

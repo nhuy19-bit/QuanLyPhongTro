@@ -53,6 +53,156 @@
 
         .brand span { color: #bfdbfe; font-size: 21px; margin-right: 6px; }
         .account { display: flex; align-items: center; gap: 14px; color: #d6e1ee; font-size: 13px; }
+
+        /* Chuông thông báo */
+        .notification-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .notification-bell {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            color: white;
+            font-size: 22px;
+            text-decoration: none;
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+        }
+
+        .notification-bell:hover {
+            background: #fda4af;
+            transform: translateY(-2px) rotate(-8deg);
+            box-shadow: 0 6px 14px rgba(251, 113, 133, 0.35);
+        }
+
+        .notification-bell:focus-visible {
+            outline: 3px solid #fda4af;
+            outline-offset: 3px;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -4px;
+            right: -5px;
+            min-width: 18px;
+            height: 18px;
+            padding: 0 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #fb7185;
+            color: white;
+            border: 2px solid #1d4ed8;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 700;
+            line-height: 1;
+            box-shadow: 0 2px 6px rgba(251, 113, 133, 0.4);
+            animation: notification-pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes notification-pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.12); }
+        }
+
+        .notification-dropdown {
+            position: absolute;
+            top: 52px;
+            right: -76px;
+            width: 320px;
+            background: white;
+            color: #0f172a;
+            border: 1px solid #fbcfe8;
+            border-radius: 18px;
+            box-shadow: 0 16px 35px rgba(190, 24, 93, 0.16);
+            z-index: 1000;
+            overflow: hidden;
+        }
+
+        .notification-dropdown[hidden] {
+            display: none;
+        }
+
+        .notification-dropdown-header {
+            padding: 16px 18px;
+            font-weight: 700;
+            color: #9d174d;
+            background: linear-gradient(135deg, #fff1f2, #fdf2f8);
+            border-bottom: 1px solid #fce7f3;
+        }
+
+        .notification-item {
+            display: block;
+            padding: 13px 18px;
+            color: #334155;
+            text-decoration: none;
+            border-bottom: 1px solid #fdf2f8;
+            font-size: 13px;
+            transition: background 0.2s, padding-left 0.2s;
+        }
+
+        .notification-item:hover {
+            background: #fff1f2;
+            padding-left: 22px;
+        }
+
+        .notification-item.unread {
+            background: #fff7f8;
+        }
+
+        .notification-item strong {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .notification-item small {
+            color: #64748b;
+        }
+
+        .notification-footer {
+            display: block;
+            padding: 12px;
+            text-align: center;
+            color: #db2777;
+            font-size: 13px;
+            font-weight: 700;
+            text-decoration: none;
+            background: #fffafd;
+        }
+
+        .notification-footer:hover {
+            background: #fdf2f8;
+        }
+
+        .notification-empty {
+            padding: 20px 12px;
+            text-align: center;
+            color: #64748b;
+            font-size: 13px;
+        }
+
+        .profile-trigger { background: none; border: 0; color: #d6e1ee; font: inherit; cursor: pointer; padding: 6px 0; }
+        .profile-trigger:hover { color: white; text-decoration: underline; }
+        .profile-modal[hidden] { display: none; }
+        .profile-modal { position: fixed; inset: 0; z-index: 2000; background: rgba(15,23,42,.6); display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .profile-panel { width: min(620px,100%); max-height: 90vh; overflow: auto; background: white; border-radius: 16px; padding: 26px; box-shadow: 0 20px 55px rgba(0,0,0,.2); }
+        .profile-heading { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:18px; }
+        .profile-heading h2 { margin:0; font-size:22px; }
+        .profile-close { border:0; background:#eff6ff; color:#1d4ed8; border-radius:8px; padding:9px 13px; cursor:pointer; font-weight:700; }
+        .profile-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:15px; }
+        .profile-field label { display:block; color:#64748b; font-size:12px; margin-bottom:7px; }
+        .profile-value { background:#f8fafc; border:1px solid #e2e8f0; border-radius:9px; padding:12px; overflow-wrap:anywhere; font-size:14px; }
+        @media(max-width:560px) { .profile-grid { grid-template-columns:1fr; } }
         .logout { padding: 8px 12px; border: 1px solid rgba(255,255,255,.25); border-radius: 6px; color: white; text-decoration: none; font-size: 12px; font-weight: 700; }
         .logout:hover { background: rgba(255,255,255,.1); }
         .page { padding: 44px 0 64px; }
@@ -73,6 +223,7 @@
             .account span { display: none; }
             .page { padding-top: 38px; }
             .quick-links { grid-template-columns: 1fr 1fr; }
+            .notification-dropdown { right: -52px; width: min(320px, calc(100vw - 28px)); }
         }
     </style>
 </head>
@@ -81,10 +232,87 @@
 <header class="topbar">
     <div class="topbar-inner">
         <a class="brand" href="{% url 'dashboard' %}"><span>⌂</span> Quản lý phòng trọ</a>
-        <div class="account">
-            <span>{{ request.user.first_name|default:request.user.username }}</span>
-            <a class="logout" href="{% url 'logout' %}">Đăng xuất</a>
+
+<div class="account">
+
+        <!-- Chuông thông báo -->
+        <div class="notification-wrapper">
+
+            <button type="button"
+                    class="notification-bell"
+                    id="notificationBell"
+                    aria-label="Thông báo"
+                    aria-expanded="false"
+                    aria-controls="notificationDropdown">
+
+                🔔
+
+                {% if so_thong_bao_chua_doc > 0 %}
+                    <span class="notification-badge">
+                        {{ so_thong_bao_chua_doc }}
+                    </span>
+                {% endif %}
+
+            </button>
+
+            <!-- Danh sách thông báo -->
+            <div class="notification-dropdown"
+                id="notificationDropdown"
+                hidden>
+
+                <div class="notification-dropdown-header">
+                    Thông báo của tôi
+                </div>
+
+                {% for tb in danh_sach_thong_bao %}
+
+                    <a href="{% url 'thong_bao_cua_toi' %}"
+                    class="notification-item {% if not tb.da_doc %}unread{% endif %}">
+
+                        <strong>
+                            {% if not tb.da_doc %}🔵 {% endif %}
+                            {{ tb.tieu_de }}
+                        </strong>
+
+                        <small>
+                            {{ tb.noi_dung|truncatechars:65 }}
+                        </small>
+
+                        <br>
+
+                        <small>
+                            {{ tb.ngay_tao|date:"H:i - d/m/Y" }}
+                        </small>
+
+                    </a>
+
+                {% empty %}
+
+                    <div class="notification-empty">
+                        Bạn chưa có thông báo nào.
+                    </div>
+
+                {% endfor %}
+
+                <a href="{% url 'thong_bao_cua_toi' %}"
+                class="notification-footer">
+                    Xem tất cả thông báo →
+                </a>
+
+            </div>
+
         </div>
+
+        <button type="button" class="profile-trigger" id="profileTrigger" aria-haspopup="dialog" aria-controls="profileModal">
+            {{ request.user.first_name|default:request.user.username }}
+        </button>
+
+        <a class="logout" href="{% url 'logout' %}">
+            Đăng xuất
+        </a>
+
+    </div>
+
     </div>
 </header>
 
@@ -108,7 +336,6 @@
                 <strong>Điện &amp; nước</strong>
                 <small>Theo dõi chỉ số sử dụng</small>
             </a>
-            
             <a href="{% url 'thanh_toan_cua_toi' %}" class="quick-link">
                 <span class="quick-icon">✓</span>
                 <strong>Thanh toán</strong>
@@ -119,5 +346,77 @@
     {% endif %}
 </main>
 
+
+<!-- Thông tin cá nhân: chỉ xem, không chỉnh sửa -->
+<div class="profile-modal" id="profileModal" hidden>
+    <section class="profile-panel" role="dialog" aria-modal="true" aria-labelledby="profileTitle">
+        <div class="profile-heading">
+            <h2 id="profileTitle">👤 Thông tin cá nhân</h2>
+            <button type="button" class="profile-close" id="profileClose">Đóng ✕</button>
+        </div>
+        {% if nguoi_thue %}
+        <div class="profile-grid">
+            <div class="profile-field"><label>Họ và tên</label><div class="profile-value">{{ nguoi_thue.ho_ten|default:"Chưa cập nhật" }}</div></div>
+            <div class="profile-field"><label>Tên đăng nhập</label><div class="profile-value">{{ request.user.username }}</div></div>
+            <div class="profile-field"><label>Ngày sinh</label><div class="profile-value">{{ nguoi_thue.ngay_sinh|date:"d/m/Y"|default:"Chưa cập nhật" }}</div></div>
+            <div class="profile-field"><label>Số CCCD</label><div class="profile-value">{{ nguoi_thue.so_cccd|default:"Chưa cập nhật" }}</div></div>
+            <div class="profile-field"><label>Số điện thoại</label><div class="profile-value">{{ nguoi_thue.so_dien_thoai|default:"Chưa cập nhật" }}</div></div>
+            <div class="profile-field"><label>Email</label><div class="profile-value">{{ nguoi_thue.email|default:"Chưa cập nhật" }}</div></div>
+            <div class="profile-field"><label>Địa chỉ</label><div class="profile-value">{{ nguoi_thue.dia_chi|default:"Chưa cập nhật" }}</div></div>
+        </div>
+        {% else %}
+        <p>Chưa tìm thấy hồ sơ người thuê của tài khoản này.</p>
+        {% endif %}
+    </section>
+</div>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const bell = document.getElementById('notificationBell');
+    const dropdown = document.getElementById('notificationDropdown');
+
+    const profileTrigger = document.getElementById('profileTrigger');
+    const profileModal = document.getElementById('profileModal');
+    const profileClose = document.getElementById('profileClose');
+    if (profileTrigger && profileModal && profileClose) {
+        profileTrigger.addEventListener('click', () => {
+            profileModal.hidden = false;
+            profileClose.focus();
+        });
+        function closeProfile() {
+            profileModal.hidden = true;
+            profileTrigger.focus();
+        }
+        profileClose.addEventListener('click', closeProfile);
+        profileModal.addEventListener('click', e => {
+            if (e.target === profileModal) closeProfile();
+        });
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape' && !profileModal.hidden) closeProfile();
+        });
+    }
+
+    if (!bell || !dropdown) return;
+
+    bell.addEventListener('click', function (event) {
+        event.stopPropagation();
+
+        dropdown.hidden = !dropdown.hidden;
+
+        bell.setAttribute(
+            'aria-expanded',
+            String(!dropdown.hidden)
+        );
+    });
+
+    dropdown.addEventListener('click', function (event) {
+        event.stopPropagation();
+    });
+
+    document.addEventListener('click', function () {
+        dropdown.hidden = true;
+        bell.setAttribute('aria-expanded', 'false');
+    });
+});
+</script>
 </body>
 </html>

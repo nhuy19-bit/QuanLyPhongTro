@@ -280,7 +280,7 @@
                     <small>Giá thuê phòng</small>
                     <h3>
                         {% if danh_sach_dien_nuoc %}
-                            {{ danh_sach_dien_nuoc.0.phong.gia_phong|floatformat:0|intcomma }} VNĐ
+                            {{ danh_sach_dien_nuoc.0.phong.gia_phong|floatformat:0|intcomma }}VNĐ
                         {% else %}
                             Chưa cập nhật
                         {% endif %}
@@ -300,28 +300,28 @@
                             <thead>
                                 <tr>
                                     <th>Tháng</th>
-                                    <th>Điện cũ</th>
-                                    <th>Điện mới</th>
-                                    <th>Điện sử dụng</th>
+                                    <th>Điện cũ (kWh)</th>
+                                    <th>Điện mới (kWh)</th>
+                                    <th>Điện sử dụng (kWh)</th>
                                     <th>Tiền điện</th>
-                                    <th>Nước cũ</th>
-                                    <th>Nước mới</th>
-                                    <th>Nước sử dụng</th>
+                                    <th>Nước cũ (m³)</th>
+                                    <th>Nước mới (m³)</th>
+                                    <th>Nước sử dụng (m³)</th>
                                     <th>Tiền nước</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {% for dn in danh_sach_dien_nuoc %}
                                     <tr>
-                                        <td>{{ dn.thang|date:"m/Y" }}</td>
-                                        <td>{{ dn.chi_so_dien_cu }}</td>
-                                        <td>{{ dn.chi_so_dien_moi }}</td>
+                                        <td>{{ dn.thang|date:"d/m/Y" }}</td>
+                                        <td>{{ dn.chi_so_dien_cu }} kWh</td>
+                                        <td>{{ dn.chi_so_dien_moi }} kWh</td>
                                         <td>{{ dn.so_dien_su_dung }} kWh</td>
-                                        <td class="money">{{ dn.tien_dien|intcomma }} VNĐ</td>
-                                        <td>{{ dn.chi_so_nuoc_cu }}</td>
-                                        <td>{{ dn.chi_so_nuoc_moi }}</td>
+                                        <td class="money">{{ dn.tien_dien|intcomma }}VNĐ</td>
+                                        <td>{{ dn.chi_so_nuoc_cu }} m³</td>
+                                        <td>{{ dn.chi_so_nuoc_moi }} m³</td>
                                         <td>{{ dn.so_nuoc_su_dung }} m³</td>
-                                        <td class="money">{{ dn.tien_nuoc|intcomma }} VNĐ</td>
+                                        <td class="money">{{ dn.tien_nuoc|intcomma }}VNĐ</td>
                                     </tr>
                                 {% endfor %}
                             </tbody>
@@ -352,12 +352,12 @@
                             <tbody>
                                 {% for tt in danh_sach_thanh_toan %}
                                     <tr>
-                                        <td>{{ tt.thang|date:"m/Y" }}</td>
-                                        <td>{{ tt.tien_phong|intcomma }} VNĐ</td>
-                                        <td>{{ tt.tien_dien|intcomma }} VNĐ</td>
-                                        <td>{{ tt.tien_nuoc|intcomma }} VNĐ</td>
-                                        <td>{{ tt.tien_khac|intcomma }} VNĐ</td>
-                                        <td class="money">{{ tt.tong_tien|intcomma }} VNĐ</td>
+                                        <td>{{ tt.thang|date:"d/m/Y" }}</td>
+                                        <td>{{ tt.tien_phong|intcomma }}VNĐ</td>
+                                        <td>{{ tt.tien_dien|intcomma }}VNĐ</td>
+                                        <td>{{ tt.tien_nuoc|intcomma }}VNĐ</td>
+                                        <td>{{ tt.tien_khac|intcomma }}VNĐ</td>
+                                        <td class="money">{{ tt.tong_tien|intcomma }}VNĐ</td>
                                         <td>
                                             {% if tt.trang_thai == 'da_thanh_toan' %}
                                                 <span class="badge paid">Đã thanh toán</span>

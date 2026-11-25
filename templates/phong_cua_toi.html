@@ -1,6 +1,7 @@
 
 <!DOCTYPE html>
 <html lang="vi">
+{% load humanize %}
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -84,9 +85,9 @@
                     </span>
                 </div>
                 
-                <div class="detail"><span class="detail-label">Diện tích</span><span class="detail-value">{{ phong.dien_tich }} m²</span></div>
-                <div class="detail"><span class="detail-label">Giá thuê</span><span class="detail-value">{{ phong.gia_phong|floatformat:0 }} VNĐ/tháng</span></div>
-                <div class="detail"><span class="detail-label">Tiền cọc</span><span class="detail-value">{{ hop_dong.tien_coc|floatformat:0 }} VNĐ</span></div>
+                <div class="detail"><span class="detail-label">Diện tích</span><span class="detail-value">{{ phong.dien_tich|floatformat:"-2" }} m²</span></div>
+                <div class="detail"><span class="detail-label">Giá thuê</span><span class="detail-value">{{ phong.gia_phong|floatformat:0|intcomma }}VNĐ/tháng</span></div>
+                <div class="detail"><span class="detail-label">Tiền cọc</span><span class="detail-value">{{ hop_dong.tien_coc|floatformat:0|intcomma }}VNĐ</span></div>
                 <div class="detail"><span class="detail-label">Ngày bắt đầu</span><span class="detail-value">{{ hop_dong.ngay_bat_dau|date:"d/m/Y" }}</span></div>
                 <div class="detail"><span class="detail-label">Ngày kết thúc</span><span class="detail-value">{% if hop_dong.ngay_ket_thuc %}{{ hop_dong.ngay_ket_thuc|date:"d/m/Y" }}{% else %}Chưa xác định{% endif %}</span></div>
             </div>
